@@ -1,0 +1,55 @@
+{% extends "base_menu.html" %}
+
+{% block head %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- {{ wikiscrapefood.id }} -->
+<h1>{{ wikiscrapefood.name }}</h1>
+<img src="{{wikiscrapefood.img_src}}">
+<p>{{ wikiscrapefood.description }} </p>
+<a href="{{wikiscrapefood.wiki_url}}">Wikipedia link </a>
+
+<!-- Categories -->
+{% if wikiscrapefood.categories %}
+<h4>Categories</h4>
+<ul class="list-group">
+  {% for category in wikiscrapefood.categories.all %}
+    <li class="list-group-item">
+      {{category.name}}
+      <a href="{% url 'review:review_landing'%}"><i class="fa fa-trash"></i></a>
+    </li>
+  {% endfor %}
+</ul>
+
+<!-- USDA -->
+<h4>USDA results</h4>
+<form action="" method="GET">
+  {% csrf_token %}
+  <div class="input-group">
+    <input name="query" class="form-control" value="{{ wikiscrapefood.name }}">
+    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+  </div>
+</form>
+
+<ul class="list-group">
+  {% for food in usda_results.foods %}
+    <li class="list-group-item">
+      {{food.description}}
+      <!-- <a href="{% url 'review:review_landing'%}"><i class="fa fa-trash"></i></a> -->
+    </li>
+  {% endfor %}
+</ul>
+
+
+{% endif %}
+
+
+
+{% endblock %}
+
+<input >

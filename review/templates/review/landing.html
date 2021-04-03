@@ -1,0 +1,33 @@
+{% extends "base_menu.html" %}
+
+
+{% block head %}
+<style>
+    .button-container{
+        display: flex;
+        width: 100%;
+        gap: 36px;
+        margin-top: 36px;
+    }
+    .big-button{
+        flex: 1 1 auto;
+        height: 150px;
+        font-size: 36px;
+        background: #5f5fa2;
+        color: #fff;
+        box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);
+        border: none;
+        border-radius: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>What do you want to review?</h1>
+    <div class="button-container">
+        <a href="{% url 'review:foods' %}" class="big-button">Foods</a>
+        <a href="{% url 'review:review_landing' %}" class="big-button">Categories</a>
+    </div>
+
+
+{% endblock content %}

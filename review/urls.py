@@ -1,11 +1,12 @@
 from django.urls import path
 from . import views
 
-app_name = 'foods'
+app_name = 'review'
 urlpatterns = [
 
-    path('', views.FoodLanding.as_view(), name='food_landing'),
-    # path('main/create', views.CatCreate.as_view(), name='cat_create'),
+    path('', views.ReviewLanding.as_view(), name='review_landing'),
+    path('foods', views.FoodListView.as_view(), name='foods'),
+    path('food/<int:pk>', views.FoodView.as_view(), name='food'),
     # path('main/<int:pk>/update', views.CatUpdate.as_view(), name='cat_update'),
     # path('main/<int:pk>/delete', views.CatDelete.as_view(), name='cat_delete'),
 
