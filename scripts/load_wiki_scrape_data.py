@@ -1,4 +1,4 @@
-# python3 manage.py runscript wiki_scrape_load
+# python3 manage.py runscript load_wiki_scrape_data
 
 from numpy import isnan
 from review.models import WikiScrapeCategory, WikiScrapeFood, WikiCategoryAssignment, FdcCategory, FdcFood, FdcCategoryAssignment, FdcWikiPairing, FdcFoodNutrient, FdcFoodMeasure
@@ -60,7 +60,7 @@ def delete_all():
 def run():
     # setup
     connection = sqlite3.connect(os.path.abspath(
-        '.') + '/wiki_scrape/food_data.sqlite')
+        '.') + '/scraped_data.sqlite')
         
     delete_all()
 
