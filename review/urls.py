@@ -6,8 +6,8 @@ urlpatterns = [
 
     path('', views.ReviewLanding.as_view(), name='review_landing'),
     path('foods', views.FoodListView.as_view(), name='foods'),
-    path('food/<int:pk>', views.FoodView.as_view(), name='food'),
-    # path('main/<int:pk>/update', views.CatUpdate.as_view(), name='cat_update'),
+    path('food/<int:pk>', views.FoodUpdate.as_view(), name='food_update'),
+    path('pair/<int:pk>', views.FoodView.as_view(), name='food_usda'),
     # path('main/<int:pk>/delete', views.CatDelete.as_view(), name='cat_delete'),
 
     # path('lookup', views.BreedView.as_view(), name='breed_list'),

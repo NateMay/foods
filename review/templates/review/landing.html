@@ -23,10 +23,60 @@
 {% endblock %}
 
 {% block content %}
-    <h1>What do you want to review?</h1>
-    <div class="button-container">
-        <a href="{% url 'review:foods' %}" class="big-button">Foods</a>
-        <a href="{% url 'review:review_landing' %}" class="big-button">Categories</a>
+    <div class="page-header">
+        <h1>Nutrition Data Aggregator <small>What do you want to review?</small></h1>
+    </div>
+    <!-- <div class="row">
+        <div class="col-sm-6 col-md-4">
+          <div class="thumbnail">
+            <img src="..." alt="...">
+            <div class="caption">
+              <h3>Thumbnail label</h3>
+              <p>...</p>
+              <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+        <div class="row">
+
+            <div class="col-sm-6 col-md-4">
+              <div class="thumbnail">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/2560px-Good_Food_Display_-_NCI_Visuals_Online.jpg" alt="A variety of foods">
+                <div class="caption">
+                  <h3>Foods</h3>
+                  <p>This workflow allows me to compile food information (name, categories, nutrition, etc.) from around the web and structure it for use in my nutrition application. </p>
+                  <p>
+                      <a href="{% url 'review:foods' %}" class="btn btn-primary" role="button">Review Foods</a> 
+                    </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/USDA_Food_Pyramid.gif" alt="A food pyramid splitting foods into categories">
+                  <div class="caption">
+                    <h3>Food Categories</h3>
+                    <p>...</p>
+                    <p>
+                        <a href="#" class="btn btn-primary" role="button">Button</a> 
+                    </p>
+                  </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <a href="https://www.figma.com/file/Wiq12dV4ZQaoniPQDlHoSz/Prototype?node-id=1433%3A49411" class="btn btn-default" role="button" target="_blank">Design Specs</a>
+            <a href="https://nate-may.com/cutcal" class="btn btn-default" role="button" target="_blank">Prototype</a>
+        </div>
+
+
+        <!-- <a href="{% url 'review:foods' %}" class="big-button">Foods</a>
+        <a href="{% url 'review:review_landing' %}" class="big-button">Categories</a> -->
     </div>
 
 

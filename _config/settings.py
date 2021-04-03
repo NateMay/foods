@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework', 
     'social_django',  
     'taggit',
+    'statici18n',
 
     'home.apps.HomeConfig', 
     'review.apps.ReviewConfig', 

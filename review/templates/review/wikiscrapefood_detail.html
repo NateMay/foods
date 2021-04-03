@@ -2,54 +2,179 @@
 
 {% block head %}
 <style>
-
+  .media-object {
+    width: 70px;
+  }
+  .img-rounded {
+    float:left; 
+    margin-right:16px;
+    width: 100%;
+  }
+  .description {
+    height: 250px;
+    width: 100%;
+    /* white-space: nowrap; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #usda {
+    width: 100%;
+    height: 200px;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
+<div class="page-header">
+  <h1>{{ wikiscrapefood.name }}</h1>
+</div>
+<div class="container-fluid">
+  <div class="row">
 
-<!-- {{ wikiscrapefood.id }} -->
-<h1>{{ wikiscrapefood.name }}</h1>
-<img src="{{wikiscrapefood.img_src}}">
-<p>{{ wikiscrapefood.description }} </p>
-<a href="{{wikiscrapefood.wiki_url}}">Wikipedia link </a>
+    <!-- Metadata -->
+    <div class="col-xs-4">
 
-<!-- Categories -->
-{% if wikiscrapefood.categories %}
-<h4>Categories</h4>
-<ul class="list-group">
-  {% for category in wikiscrapefood.categories.all %}
-    <li class="list-group-item">
-      {{category.name}}
-      <a href="{% url 'review:review_landing'%}"><i class="fa fa-trash"></i></a>
-    </li>
-  {% endfor %}
-</ul>
+      <div class="media">
+        <div class="media-left">
+          <a href="#">
+            <img class="media-object" alt="United States Department of Aggreculture" src="https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png">
+          </a>
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading">Wikipedia Metadata</h4>
+          This data was scraped from <a href="{{wikiscrapefood.wiki_url}}" target="_blank">this Wikipedia page</a>.
+        </div>
+      </div>
+      <br>
 
-<!-- USDA -->
-<h4>USDA results</h4>
-<form action="" method="GET">
-  {% csrf_token %}
-  <div class="input-group">
-    <input name="query" class="form-control" value="{{ wikiscrapefood.name }}">
-    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+      <img src="{{wikiscrapefood.img_src}}" class="img-rounded">
+      
+      <p class="description">{{ wikiscrapefood.description }} </p>
+      
+      <!-- Categories -->
+      <h4>Categories</h4>
+      <ul class="list-group">
+        {% for category in wikiscrapefood.categories.all %}
+          <li class="list-group-item">
+            {{category.name}}
+            <!-- <a href="{% url 'review:review_landing'%}"><i class="fa fa-trash"></i></a> -->
+          </li>
+        {% endfor %}
+      </ul>
+      
+      <a class="btn btn-default" href="{% url 'review:food_update' wikiscrapefood.id %}">Edit Metadata</a>
+    </div>
+
+    <!-- USDA -->
+    <div class="col-xs-8">
+
+      <div class="media">
+        <div class="media-left">
+          <a href="#">
+            <img class="media-object" alt="United States Department of Aggreculture" src="https://upload.wikimedia.org/wikipedia/commons/3/37/USDA_logo.png">
+          </a>
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading">USDA results</h4>
+          Link the metadata to the left with one of the USDA items below. Click the eye to inspect and create the pairing.
+        </div>
+      </div>
+
+      <!-- <form action="" method="GET">
+        {% csrf_token %}
+        
+        <div class="input-group">
+          <input name="query" class="form-control" value="{{ wikiscrapefood.name }}">
+          <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        </div>
+      </form> -->
+      
+        <br>
+        <ul id="usda" class="list-group">
+          {% for usda in usda_foods %}
+          <li class="list-group-item">
+            <span class="badge">{{usda.foodNutrients |length }}</span>
+            <a role="button" class="btn" data-toggle="modal" data-target="#modal-{{usda.fdcId}}"><i class="fa fa-eye"></i></a>
+            {{usda.description}} <small>**{{usda.dataType}}</small>
+
+            
+
+            <div id="modal-{{usda.fdcId}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">{{usda.description}}</h4>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Property</th>
+                          <th>Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>fdcId</td>
+                          <td>{{usda.fdcId}}</td>
+                        </tr>
+                        <tr>
+                          <td>Data Source</td>
+                          <td>{{usda.dataType}}</td>
+                        </tr>
+                        <tr>
+                          <td>Common Names</td>
+                          <td>{{usda.commonNames}}</td>
+                        </tr>
+
+                        <tr>
+                          <td>Brand</td>
+                          <td>{{ usda.brandOwner }}</td>
+                        </tr>
+
+                        <tr>
+                          <td>Ingredients</td>
+                          <td>{{ usda.ingredients }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <br>
+                    <h4>Key Nutrition Data Points</h4>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Nutrient</th>
+                          <th>Value per 100g</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for nutrient in usda.short_list %}
+                        <tr>
+                          <td>{{nutrient.nutrientName}}</td>
+                          <td>{{nutrient.value}}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Pair With Metadata</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% endfor %}
+        </ul>
+        
+    </div>
+
   </div>
-</form>
+</div>
 
-<ul class="list-group">
-  {% for food in usda_results.foods %}
-    <li class="list-group-item">
-      {{food.description}}
-      <!-- <a href="{% url 'review:review_landing'%}"><i class="fa fa-trash"></i></a> -->
-    </li>
-  {% endfor %}
-</ul>
-
-
-{% endif %}
-
-
+<br><br>
 
 {% endblock %}
-
-<input >

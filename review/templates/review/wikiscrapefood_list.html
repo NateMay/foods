@@ -11,7 +11,7 @@
   {% if term %}
     <small>filtering: "{{term}}"</small>
   {% endif %}
-  <input type="submit" value="Submit">
+  <input type="submit" value="Filter results">
 </form>
 <p>
 
@@ -21,7 +21,7 @@
 <ul class="list-group">
   {% for food in wikiscrapefood_list %}
     <li class="list-group-item">
-      <a href="{% url 'review:food' food.id %}">{{food.name}}</a>
+      <a href="{% url 'review:food_update' food.id %}">{{food.name}}</a>
     </li>
   {% endfor %}
 </ul>
