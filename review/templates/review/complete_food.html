@@ -1,0 +1,107 @@
+{% extends "base_menu.html" %}
+
+{% block head %}
+<style>
+  .media-object {
+    width: 70px;
+  }
+  .img-rounded {
+    float:left; 
+    margin-right:16px;
+    width: 100%;
+  }
+  .description {
+    width: 100%;
+    /* white-space: nowrap; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{food.name}}</h1>
+</div>
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Metadata -->
+    <div class="col-xs-6">
+
+      <div class="media">
+        <div class="media-left">
+          <a href="#">
+            <img class="media-object" alt="United States Department of Aggreculture" src="https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png">
+          </a>
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading">Wikipedia Metadata</h4>
+          This data was scraped from <a href="{{food.wiki_url}}" target="_blank">this Wikipedia page</a>.
+        </div>
+      </div>
+      <br>
+
+      <img src="{{food.img_src}}" class="img-rounded">
+      
+      <p class="description">{{ food.description }} </p>
+      
+      <!-- Categories -->
+      <h4>Categories</h4>
+      <ul class="list-group">
+        {% for category in food.categories.all %}
+          <li class="list-group-item">
+            {{category.name}}
+            <!-- <a href="{% url 'review:review_landing'%}"><i class="fa fa-trash"></i></a> -->
+          </li>
+        {% endfor %}
+      </ul>
+      {% if user.is_authenticated %}
+      <a class="btn btn-default" href="{% url 'review:food_metadata' food.id %}">Edit Metadata</a>
+      {% endif %}
+    </div>
+
+    <div class="col-xs-6">
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>fdcId</td>
+            <td>{{usda.fdcId}}</td>
+          </tr>
+          <tr>
+            <td>Data Source</td>
+            <td>{{usda.foodClass}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <br>
+      <h4>Key Nutrition Data Points</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nutrient</th>
+            <th>Value per 100g</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for foodNutrient in foodNutrients %}
+          <tr>
+            <td>{{foodNutrient.nutrient.name}}</td>
+            <td>{{foodNutrient.amount}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}

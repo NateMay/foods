@@ -90,7 +90,7 @@ class UsdaWikiPairing(models.Model):
     wiki_food = models.ForeignKey(WikiScrapeFood, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.usda_food + ' - ' + self.wiki_food
+        return self.wiki_food.name
 
 class UsdaNutrient(models.Model):
     class Meta:
@@ -106,18 +106,18 @@ class UsdaNutrient(models.Model):
 
 class UsdaFoodNutrient(models.Model):
     amount = models.FloatField()
-    nutrient = models.ForeignKey('UsdaNutrient',on_delete=models.CASCADE)
-    usda_food = models.ForeignKey('UsdaFood',on_delete=models.CASCADE)
+    nutrient = models.ForeignKey(UsdaNutrient,on_delete=models.CASCADE)
+    usda_food = models.ForeignKey(UsdaFood,on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.quanity + ' ' + self.name
+        return self.usda_food.description + ' | ' + str(self.amount) + ' ' + self.nutrient.unitName + ' ' + self.nutrient.name
 
 class UsdaFoodPortion(models.Model):
     portionDescription = models.CharField(max_length=200, null=True) 
     modifier = models.CharField(max_length=100)
     gramWeight = models.CharField(max_length=20)
     sequenceNumber = models.IntegerField(null=True)
-    usda_food = models.ForeignKey('UsdaFood',on_delete=models.CASCADE)
+    usda_food = models.ForeignKey(UsdaFood,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.portionDescription

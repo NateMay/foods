@@ -1,0 +1,39 @@
+{% extends "base_menu.html" %}
+
+{% block head %}
+<style>
+  .img-thumbnail {
+    height: 153px;
+    float: left;
+    margin-right: 8px; 
+  }
+  .list-group-item{
+    height: 172px;
+    overflow: hidden;
+  }
+  .desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Completed Foods</h1>
+</div>
+<ul class="list-group">
+  {% for food in completed %}
+  <a class="list-group-item" href="{% url 'review:complete_food' food.id %}">
+    <img src="{{food.img_src}}" alt="..." class="img-thumbnail">
+    <h3>{{food.name}}</h3>
+    <p class="desc">{{food.description}}</p>
+  </a>
+  
+</ul>
+  
+
+{% endfor %}
+
+{% endblock %}

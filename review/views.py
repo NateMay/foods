@@ -9,14 +9,15 @@ from django.urls import reverse_lazy
 from review.usda.usda_http import get_usda_results, make_usda_food
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 
-from review.models import WikiScrapeFood, UsdaWikiPairing
+from review.models import WikiScrapeFood, UsdaWikiPairing, UsdaFoodNutrient
 
 ENDPOINT = 'https://api.nal.usda.gov/fdc/v1/foods/search'
 APIKEY = 'NVguQkLzba5lX36C0GNpZBCyBAvtHZ5lLbxE5RKp'
 
 NUTRIENT_SHORT_LIST = ['301', '303', '324', '601', '606', '203', '204', '208', '291', '307', '539', '605']
-
 SOURCES = ['Survey (FNDDS)', 'SR Legacy', 'Foundation']
+
+
 class ReviewLanding(LoginRequiredMixin, View):
     def get(self, req):
         context = {}
@@ -37,7 +38,7 @@ class FoodListView(ListView):
         return context
 
 
-class UsdaPairingView(LoginRequiredMixin, View):
+class UsdaPairingView(View):
     
     template_name = 'review/usda_pairing_form.html'
     model = WikiScrapeFood
@@ -73,7 +74,7 @@ class UsdaPairingView(LoginRequiredMixin, View):
 
         food.save()
         
-        return redirect(reverse_lazy('review:food_usda', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pk}))
         # return redirect(reverse_lazy('review:review_landing'))
 
 
@@ -105,3 +106,28 @@ class FoodMetadataUpdate(LoginRequiredMixin, View):
 
         return redirect(reverse_lazy('review:food_metadata', kwargs={'pk': pk}))
 
+
+class CompleteFoodView(View):
+    model = WikiScrapeFood
+    template_name = 'review/complete_food.html'
+    
+    def get(self, request, pk=None):
+        food = WikiScrapeFood.objects.get(id=pk)
+        usda = food.usdawikipairing_set.all()[0].usda_food;
+        
+        return render(request, self.template_name, {
+            'food': food,
+            'usda': usda,
+            'foodNutrients': UsdaFoodNutrient.objects.filter(usda_food=usda.id)
+        })
+
+
+class CompletedListView(View):
+    template_name = 'review/completed_foods.html'
+
+    def get(self, request, ):
+        completed = WikiScrapeFood.objects.filter(paired=True)
+        
+        return render(request, self.template_name, {
+            'completed': completed
+        })

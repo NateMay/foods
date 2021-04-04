@@ -8,6 +8,7 @@ urlpatterns = [
     path('foods', views.FoodListView.as_view(), name='foods'),
     path('food_metadata/<int:pk>', views.FoodMetadataUpdate.as_view(), name='food_metadata'),
     path('pair/<int:pk>', views.UsdaPairingView.as_view(), name='food_usda'),
-    # path('main/<int:pk>/delete', views.CatDelete.as_view(), name='cat_delete'),
+    path('complete/<int:pk>', views.CompleteFoodView.as_view(), name='complete_food'),
+    path('completed', views.CompletedListView.as_view(), name='completed'),
 
 ]

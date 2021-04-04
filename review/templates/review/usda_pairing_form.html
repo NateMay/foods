@@ -35,7 +35,7 @@
   <div class="row">
 
     <!-- Metadata -->
-    <div class="col-xs-4">
+    <div class="col-xs-5">
 
       <div class="media">
         <div class="media-left">
@@ -64,12 +64,13 @@
           </li>
         {% endfor %}
       </ul>
-      
+      {% if user.is_authenticated %}
       <a class="btn btn-default" href="{% url 'review:food_metadata' food.id %}">Edit Metadata</a>
+      {% endif %}
     </div>
 
     <!-- USDA -->
-    <div class="col-xs-8">
+    <div class="col-xs-7">
 
       <div class="media">
         <div class="media-left">
