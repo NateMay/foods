@@ -31,6 +31,7 @@ class WikiScrapeFood(models.Model):
     wiki_url = models.CharField(max_length=1000)
     img_src = models.CharField(max_length=1000, null=True)
     categories = models.ManyToManyField('WikiScrapeCategory', through='WikiCategoryAssignment')
+    paired = models.BooleanField(null=True)
 
     def __str__(self):
         return self.name
@@ -49,77 +50,74 @@ class WikiCategoryAssignment(models.Model):
 
 
 
-class FdcCategory(models.Model):
-    name = models.CharField(
-        max_length=200,
-        blank=False,
-        validators=[MinLengthValidator(
-            2, "Category names must be longer than 1 character")]
-    )
 
-class FdcFood(models.Model):
-    fdcId = models.CharField(max_length=20)
-    foodClass = models.CharField(max_length=20)
+
+class UsdaFood(models.Model):
+    fdcId = models.CharField(max_length=20, unique=True)
     description = models.CharField(max_length=20000)
 
     # 'Survey (FNDDS)' | 'Branded' | 'Foundation' | 'SR Legacy'
-    foodType = models.CharField(max_length=200) 
-    foodCode = models.CharField(max_length=20) # FNDDS id
-    totalRefuse = models.CharField(max_length=20)
-    ingredients = models.CharField(max_length=20000)
-    scientificName = models.CharField(max_length=500)
+    foodClass = models.CharField(max_length=200) 
+    foodCode = models.CharField(max_length=20, null=True) # FNDDS id
+    totalRefuse = models.CharField(max_length=20, null=True)
+    ingredients = models.CharField(max_length=20000, null=True)
+    scientificName = models.CharField(max_length=500, null=True)
 
     # GTIN or UPC code identifying the food. Only applies to Branded Foods.
-    gtinUpc = models.CharField(max_length=20)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    categories = models.ManyToManyField('FdcCategory', through='FdcCategoryAssignment')
-    foods = models.ManyToManyField('WikiScrapeFood', through='FdcWikiPairing')
-    # nutrients # not sure how to reference
-    # foodMeasures?: FdcFoodMeasure[]
-    
+    gtinUpc = models.CharField(max_length=20, null=True)
     # finalFoodInputFoods?: FinalFoodInputFoods[]
     # foodComponents?: any[] // ??
 
-# The FDC API provides an arrat of category strings...not sure what I should do with them just yet
-class FdcCategoryAssignment(models.Model):
-    food = models.ForeignKey(FdcFood, on_delete=models.CASCADE)
-    category = models.ForeignKey(FdcCategory, on_delete=models.CASCADE)
-
-class FdcWikiPairing(models.Model):
-    fdc_food = models.ForeignKey(FdcFood, on_delete=models.CASCADE)
-    wiki_food = models.ForeignKey(WikiScrapeFood, on_delete=models.CASCADE)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-
-class FdcFoodNutrient(models.Model):
-    food = models.ForeignKey('FdcFood',on_delete=models.CASCADE)
-
-    type = models.CharField(max_length=100)
-    # id = models.CharField(max_length=5)
-    value = models.CharField(max_length=20)
-    lastUpdated = models.CharField(max_length=50)
-    # nutrient: FdcNutrient from here down
-    nutrient_id = models.IntegerField(null=True)
-    number = models.CharField(max_length=50)
-    name = models.CharField(max_length=50)
-    rank = models.IntegerField(null=True)
-    isNutrientLabel = models.BooleanField()
-    indentLevel = models.IntegerField(null=True)
-    shortestName = models.CharField(max_length=200)
-    nutrientUnit = models.CharField(max_length=50)
-
-class FdcFoodMeasure(models.Model):
-    food = models.ForeignKey('FdcFood',on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
-    # id = models.IntegerField(null=True)
+    # foods = models.ManyToManyField('WikiScrapeFood', through='FdcWikiPairing')
+    
+    # nutrients # not sure how to reference
+
+    def __str__(self):
+        return self.description
+    
+
+# The FDC API provides an arrat of category strings...not sure what I should do with them just yet
+
+class UsdaWikiPairing(models.Model):
+
+    class Meta:
+        unique_together = (('usda_food', 'wiki_food'),)
+
+    usda_food = models.ForeignKey(UsdaFood, on_delete=models.CASCADE)
+    wiki_food = models.ForeignKey(WikiScrapeFood, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.usda_food + ' - ' + self.wiki_food
+
+class UsdaNutrient(models.Model):
+    class Meta:
+        unique_together = (('number', 'unitName'),)
+
+    number = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    rank = models.IntegerField(null=True)
+    unitName = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class UsdaFoodNutrient(models.Model):
+    amount = models.FloatField()
+    nutrient = models.ForeignKey('UsdaNutrient',on_delete=models.CASCADE)
+    usda_food = models.ForeignKey('UsdaFood',on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.quanity + ' ' + self.name
+
+class UsdaFoodPortion(models.Model):
+    portionDescription = models.CharField(max_length=200, null=True) 
     modifier = models.CharField(max_length=100)
     gramWeight = models.CharField(max_length=20)
-    disseminationText = models.CharField(max_length=2000)
-    rank = models.IntegerField(null=True)
+    sequenceNumber = models.IntegerField(null=True)
+    usda_food = models.ForeignKey('UsdaFood',on_delete=models.CASCADE)
 
-    # measureUnit: FdcMeasureUnit from here down
-    # id = models.IntegerField(null=True)
-    name = models.CharField(max_length=200)
-    abbreviation = models.CharField(max_length=40)
+    def __str__(self):
+        return self.portionDescription

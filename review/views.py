@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from review.forms import FoodForm
+from review.forms import FoodForm, UsdaPairForm
 from review.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 from pydash import py_
 import requests
 from django.urls import reverse_lazy
+from review.usda.usda_http import get_usda_results, make_usda_food
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 
-from review.models import WikiScrapeFood
+from review.models import WikiScrapeFood, UsdaWikiPairing
 
 ENDPOINT = 'https://api.nal.usda.gov/fdc/v1/foods/search'
 APIKEY = 'NVguQkLzba5lX36C0GNpZBCyBAvtHZ5lLbxE5RKp'
@@ -23,6 +24,7 @@ class ReviewLanding(LoginRequiredMixin, View):
 
 
 class FoodListView(ListView):
+    template_name = 'review/scraped_food_list.html'
     model = WikiScrapeFood
 
     def get_context_data(self, **kwargs):
@@ -35,28 +37,48 @@ class FoodListView(ListView):
         return context
 
 
-class FoodView(DetailView):
+class UsdaPairingView(LoginRequiredMixin, View):
+    
+    template_name = 'review/usda_pairing_form.html'
     model = WikiScrapeFood
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get(self, request, pk):
+        food = WikiScrapeFood.objects.get(pk=pk)
 
-        food_name = context['wikiscrapefood'].name
+        return render(request, self.template_name, {
+            'food': food,
+            'form': UsdaPairForm(),
+            'usda_foods': get_usda_results(food.name)
+        })
 
-        context["usda_foods"] = requests.get(
-            f'{ENDPOINT}?query={food_name}&api_key={APIKEY}'
-        ).json().get('foods')
+    def post(self, request, pk=None):
 
-        context["usda_foods"] = py_.filter(context["usda_foods"], lambda f: f.get('dataType') in SOURCES)
+        food = get_object_or_404(WikiScrapeFood, id=pk)
+        form = UsdaPairForm(request.POST)
+    
+
+        if not form.is_valid():
+            return render(request, self.template_name, {
+                'form': form,
+                'food': food,
+                'usda_foods': get_usda_results(food.name)
+            })
+
+        UsdaWikiPairing(
+            wiki_food= food,
+            usda_food= make_usda_food(request.POST.get('fdc'))
+        ).save()
+
+        food.paired = True
+
+        food.save()
         
-        for food in context["usda_foods"]:
-            food['short_list'] = py_.filter(food.get('foodNutrients'), lambda n: n.get('nutrientNumber') in NUTRIENT_SHORT_LIST)
-        return context
+        return redirect(reverse_lazy('review:food_usda', kwargs={'pk': pk}))
+        # return redirect(reverse_lazy('review:review_landing'))
 
 
-
-class FoodUpdate(LoginRequiredMixin, View):
-    template_name = 'review/wikiscrapefood_form.html'
+class FoodMetadataUpdate(LoginRequiredMixin, View):
+    template_name = 'review/food_metadata_form.html'
     success_url = reverse_lazy('review:foods')
 
     def get(self, request, pk):
@@ -72,14 +94,14 @@ class FoodUpdate(LoginRequiredMixin, View):
         form = FoodForm(request.POST, instance=food)
 
         if not form.is_valid():
-            print('form.is_valid(): ', form.is_valid())
-            print('errors: ', form.errors)
             return render(request, self.template_name, {
                 'form': form,
                 'food': food
             })
 
         food = form.save(commit=False)
+        food.categories.set(form.cleaned_data['categories'])
         food.save()
-        success_url = reverse_lazy('review:food_update', kwargs={'pk': pk})
-        return redirect(self.success_url)
+
+        return redirect(reverse_lazy('review:food_metadata', kwargs={'pk': pk}))
+

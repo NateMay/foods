@@ -1,7 +1,7 @@
 # python3 manage.py runscript load_wiki_scrape_data
 
 from numpy import isnan
-from review.models import WikiScrapeCategory, WikiScrapeFood, WikiCategoryAssignment, FdcCategory, FdcFood, FdcCategoryAssignment, FdcWikiPairing, FdcFoodNutrient, FdcFoodMeasure
+from review.models import WikiScrapeCategory, WikiScrapeFood, WikiCategoryAssignment, FdcCategory, UsdaFood, FdcCategoryAssignment, UsdaWikiPairing, UsdaNutrient, UsdaFoodMeasure
 import pandas as pd
 import sqlite3
 from pydash import py_
@@ -47,11 +47,11 @@ def delete_all():
         WikiScrapeFood.objects.all().delete()
         WikiCategoryAssignment.objects.all().delete()
         FdcCategory.objects.all().delete()
-        FdcFood.objects.all().delete()
+        UsdaFood.objects.all().delete()
         FdcCategoryAssignment.objects.all().delete()
-        FdcWikiPairing.objects.all().delete()
-        FdcFoodNutrient.objects.all().delete()
-        FdcFoodMeasure.objects.all().delete()
+        UsdaWikiPairing.objects.all().delete()
+        UsdaNutrient.objects.all().delete()
+        UsdaFoodMeasure.objects.all().delete()
     except Exception:
         print('no object yet')
         pass

@@ -18,10 +18,10 @@ SHOULD = {
     'reset_db': True,
 
     # # sections of the scraping logic
-    # 'single_table_category': True,  # 1175 foods
-    # 'manual_categories': True,  # 30 foods
+    'single_table_category': True,  # 1175 foods
+    'manual_categories': True,  # 30 foods
     'table_categories': True,  # 836 foods
-    # 'ul_categories': True, # 772 foods
+    'ul_categories': True, # 772 foods
 
     # 'dishes': False # not implemented
 }

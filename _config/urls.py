@@ -21,9 +21,11 @@ from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.views.static import serve
 from django import views as django_views
+
 urlpatterns = [
-    path('', include('home.urls')),
-    path('review/', include('review.urls')),
+    path('', include('review.urls')),
+    # path('', include('home.urls')),
+    # path('review/', include('review.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')), 
     url(r'^jsi18n/$', django_views.i18n.JavaScriptCatalog.as_view(), name='jsi18n'),

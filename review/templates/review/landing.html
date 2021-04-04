@@ -1,83 +1,122 @@
 {% extends "base_menu.html" %}
-
+{% load static %}
 
 {% block head %}
+
 <style>
-    .button-container{
-        display: flex;
-        width: 100%;
-        gap: 36px;
-        margin-top: 36px;
-    }
-    .big-button{
-        flex: 1 1 auto;
-        height: 150px;
-        font-size: 36px;
-        background: #5f5fa2;
-        color: #fff;
-        box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);
-        border: none;
-        border-radius: 16px;
-    }
+  .button-container{
+    display: flex;
+    width: 100%;
+    gap: 36px;
+    margin-top: 36px;
+  }
+  .big-button{
+    flex: 1 1 auto;
+    height: 150px;
+    font-size: 36px;
+    background: #5f5fa2;
+    color: #fff;
+    box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);
+    border: none;
+    border-radius: 16px;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-    <div class="page-header">
-        <h1>Nutrition Data Aggregator <small>What do you want to review?</small></h1>
-    </div>
-    <!-- <div class="row">
-        <div class="col-sm-6 col-md-4">
-          <div class="thumbnail">
-            <img src="..." alt="...">
-            <div class="caption">
-              <h3>Thumbnail label</h3>
-              <p>...</p>
-              <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
-            </div>
+  <div class="page-header">
+    <h1>Nutrition Data Aggregator <small>What do you want to review?</small></h1>
+  </div>
+
+
+    <div class="row">
+
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/2560px-Good_Food_Display_-_NCI_Visuals_Online.jpg" alt="A variety of foods">
+          <div class="caption">
+          <h3>Foods</h3>
+          <p>This workflow allows me to compile food information (name, categories, nutrition, etc.) from around the web and structure it for use in my nutrition application. </p>
+          <p>
+            <a href="{% url 'review:foods' %}" class="btn btn-primary" role="button">Review Foods</a> 
+            </p>
           </div>
         </div>
-      </div> -->
+      </div>
 
-        <div class="row">
-
-            <div class="col-sm-6 col-md-4">
-              <div class="thumbnail">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/2560px-Good_Food_Display_-_NCI_Visuals_Online.jpg" alt="A variety of foods">
-                <div class="caption">
-                  <h3>Foods</h3>
-                  <p>This workflow allows me to compile food information (name, categories, nutrition, etc.) from around the web and structure it for use in my nutrition application. </p>
-                  <p>
-                      <a href="{% url 'review:foods' %}" class="btn btn-primary" role="button">Review Foods</a> 
-                    </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/USDA_Food_Pyramid.gif" alt="A food pyramid splitting foods into categories">
-                  <div class="caption">
-                    <h3>Food Categories</h3>
-                    <p>...</p>
-                    <p>
-                        <a href="#" class="btn btn-primary" role="button">Button</a> 
-                    </p>
-                  </div>
-                </div>
-            </div>
-
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/USDA_Food_Pyramid.gif" alt="A food pyramid splitting foods into categories">
+          <div class="caption">
+            <h3>Food Categories</h3>
+            <p>...</p>
+            <p>
+                <a href="#" class="btn btn-primary" role="button">Button</a> 
+            </p>
+          </div>
         </div>
+      </div>
 
-        <div class="row">
-            <a href="https://www.figma.com/file/Wiq12dV4ZQaoniPQDlHoSz/Prototype?node-id=1433%3A49411" class="btn btn-default" role="button" target="_blank">Design Specs</a>
-            <a href="https://nate-may.com/cutcal" class="btn btn-default" role="button" target="_blank">Prototype</a>
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/food-recipe-book-design-template-96cfa4235ae5da396de74c3bdad442f7_screen.jpg?ts=1597154519" alt="A food pyramid splitting foods into categories">
+          <div class="caption">
+            <h3>Recipes</h3>
+            <p>...</p>
+            <p>
+                <a href="#" class="btn btn-primary" role="button">Button</a> 
+            </p>
+          </div>
         </div>
+      </div>
 
-
-        <!-- <a href="{% url 'review:foods' %}" class="big-button">Foods</a>
-        <a href="{% url 'review:review_landing' %}" class="big-button">Categories</a> -->
     </div>
+
+    
+    <h2>The Endgame <small>Currated data for a JavaScript-based Web Apllication</small></h2>
+    <br>
+
+    <div class="row">
+      <!-- <a href="https://www.figma.com/file/Wiq12dV4ZQaoniPQDlHoSz/Prototype?node-id=1433%3A49411" class="btn btn-default" role="button" target="_blank">Design Specs</a>
+      <a href="https://nate-may.com/cutcal" class="btn btn-default" role="button" target="_blank">Prototype</a> -->
+      
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <img src="{% static 'images/cutcal.png' %}" alt="A variety of foods">
+          <div class="caption">
+          <h3>Cutcal Prototype</h3>
+          <p>Build in JavaScript using the Angular framework</p>
+          <p>
+            <a href="https://cutcal.com/calendar/month/(dmy:28-2-2020)" 
+              class="btn btn-primary" role="button" target="_blank">
+              Check Out Cutcal Prototype
+            </a> 
+          </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <img src="{% static 'images/dietstats.png' %}" alt="A variety of foods">
+          <div class="caption">
+          <h3>DietStats Redesign</h3>
+          <p>Designed in Figma. Still undergoing major design reiteration.</p>
+          <p>
+            <a href="https://www.figma.com/file/Wiq12dV4ZQaoniPQDlHoSz/Prototype" 
+              class="btn btn-primary" role="button" target="_blank">
+              Check Out Cutcal Prototype
+            </a>
+          </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- <a href="{% url 'review:foods' %}" class="big-button">Foods</a>
+    <a href="{% url 'review:review_landing' %}" class="big-button">Categories</a> -->
+  </div>
 
 
 {% endblock content %}
