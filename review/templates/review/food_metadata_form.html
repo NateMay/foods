@@ -9,6 +9,21 @@
   .img-rounded {
     width: 100%
   }
+  .unsplash {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px
+  }
+  .small{
+    height: 60px;
+    width: 60px
+  }
+  .new-image {
+    border: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
 </style>
 
 {% endblock %}
@@ -28,7 +43,7 @@
     <div class="col-xs-6">
 
       <!-- img -->
-      <img src="{{food.img_src}}" class="img-rounded">
+      <img id="main-image" src="{{food.img_src}}" class="img-rounded">
 
       <!-- img_src -->
       <div class="form-group"> 
@@ -37,15 +52,26 @@
           class="control-label requiredField">
           Image Source <span class="asteriskField">*</span> 
         </label> 
-        <div class="controls "> 
+        <div class="controls"> 
           <input type="text" 
             id="{{ form.img_src.id_for_label }}" 
             name="{{ form.img_src.html_name }}"  
             value="{{form.img_src.value}}" 
             maxlength="1000"
-            class="textinput textInput form-control" 
+            class="main-image-input textinput textInput form-control" 
             required> 
         </div> 
+      </div>
+
+      <div class="unsplash">
+        <button class="new-image" type="button">
+          <img class="img-rounded small" src="{{food.img_src}}">
+        </button>
+        {% for image in images%}
+        <button class="new-image" type="button">
+          <img class="img-rounded small" src="{{image.urls.full}}">
+        </button>
+        {% endfor %}
       </div>
 
       <!-- wiki_url -->
@@ -129,5 +155,12 @@
 
 <hr>
 
-
+<script type="text/javascript">
+  $('.new-image').click(function() {
+    var src = $(this).children(":first").attr("src")
+    $('.main-image-input').first().attr("value", src)
+    $('#main-image').attr("src", src)
+  })
+  
+  </script>
 {% endblock %}

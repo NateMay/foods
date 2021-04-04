@@ -1,21 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
+import re
 from django.contrib.auth.mixins import LoginRequiredMixin
-from review.forms import FoodForm, UsdaPairForm
-from review.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
-from pydash import py_
-import requests
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import ListView
+from pydash import py_
+from review.forms import FoodForm, UsdaPairForm
+from review.models import UsdaFoodNutrient, UsdaWikiPairing, WikiScrapeFood
+from review.unsplash.unsplash_api import get_images
 from review.usda.usda_http import get_usda_results, make_usda_food
-from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
-
-from review.models import WikiScrapeFood, UsdaWikiPairing, UsdaFoodNutrient
-
-ENDPOINT = 'https://api.nal.usda.gov/fdc/v1/foods/search'
-APIKEY = 'NVguQkLzba5lX36C0GNpZBCyBAvtHZ5lLbxE5RKp'
-
-NUTRIENT_SHORT_LIST = ['301', '303', '324', '601', '606', '203', '204', '208', '291', '307', '539', '605']
-SOURCES = ['Survey (FNDDS)', 'SR Legacy', 'Foundation']
 
 
 class ReviewLanding(LoginRequiredMixin, View):
@@ -83,9 +76,11 @@ class FoodMetadataUpdate(LoginRequiredMixin, View):
     success_url = reverse_lazy('review:foods')
 
     def get(self, request, pk):
+        food = WikiScrapeFood.objects.get(pk=pk)
         return render(request, self.template_name, {
             'form': FoodForm(instance=get_object_or_404(WikiScrapeFood, id=pk)),
-            'food': WikiScrapeFood.objects.get(pk=pk),
+            'food': food,
+            'images': get_images(re.sub(r'[^A-Za-z0-9 ]+', '' ,food.name), 1)
         })
     
 
@@ -104,13 +99,14 @@ class FoodMetadataUpdate(LoginRequiredMixin, View):
         food.categories.set(form.cleaned_data['categories'])
         food.save()
 
-        return redirect(reverse_lazy('review:food_metadata', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pk}))
 
 
 class CompleteFoodView(View):
     model = WikiScrapeFood
     template_name = 'review/complete_food.html'
     
+
     def get(self, request, pk=None):
         food = WikiScrapeFood.objects.get(id=pk)
         usda = food.usdawikipairing_set.all()[0].usda_food;
@@ -118,7 +114,7 @@ class CompleteFoodView(View):
         return render(request, self.template_name, {
             'food': food,
             'usda': usda,
-            'foodNutrients': UsdaFoodNutrient.objects.filter(usda_food=usda.id)
+            'foodNutrients': UsdaFoodNutrient.objects.filter(usda_food=usda.id),
         })
 
 
@@ -126,8 +122,19 @@ class CompletedListView(View):
     template_name = 'review/completed_foods.html'
 
     def get(self, request, ):
-        completed = WikiScrapeFood.objects.filter(paired=True)
-        
+        completed = UsdaWikiPairing.objects.all()
+
+        for pair in completed:
+            nutrients = {}
+            for nutr in UsdaFoodNutrient.objects.filter(usda_food=pair.usda_food.id):
+                key = re.sub(r'[^a-zA-Z0-9]', '', nutr.nutrient.name)
+                nutrients[key] = {
+                    'nutrient': nutr.nutrient.name,
+                    'amount': nutr.amount,
+                    'unit': nutr.nutrient.unitName,
+                }
+            pair.set_data('nutrients', nutrients)
+
         return render(request, self.template_name, {
             'completed': completed
         })

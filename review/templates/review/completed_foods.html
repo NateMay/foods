@@ -3,17 +3,20 @@
 {% block head %}
 <style>
   .img-thumbnail {
-    height: 153px;
+    height: 136px;
     float: left;
     margin-right: 8px; 
   }
   .list-group-item{
-    height: 172px;
+    background: #f1f1f1;
     overflow: hidden;
   }
   .desc {
     overflow: hidden;
     text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; 
+    -webkit-box-orient: vertical;
   }
 </style>
 {% endblock %}
@@ -24,16 +27,47 @@
   <h1>Completed Foods</h1>
 </div>
 <ul class="list-group">
-  {% for food in completed %}
-  <a class="list-group-item" href="{% url 'review:complete_food' food.id %}">
-    <img src="{{food.img_src}}" alt="..." class="img-thumbnail">
-    <h3>{{food.name}}</h3>
-    <p class="desc">{{food.description}}</p>
+  {% for pair in completed %}
+  <a class="list-group-item" href="{% url 'review:complete_food' pair.wiki_food.id %}">
+    <img src="{{pair.wiki_food.img_src}}" alt="..." class="img-thumbnail">
+    <h3>{{pair.wiki_food.name}}</h3>
+    <p class="desc">{{pair.wiki_food.description}}</p>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Calories</th>
+          <th>Protein</th>
+          <th>Carbohydrates</th>
+          <th>Fat</th>
+          <th>Sodium</th>
+          <th>Sugars</th>
+          <th>Calcium</th>
+          <th>Iron</th>
+          <th>Potassium</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% with nutr=pair.data.nutrients %}  
+        <tr>
+          <td>{{nutr.Energy.amount}} {{nutr.Energy.unit}}</td>
+          <td>{{nutr.Protein.amount}} {{nutr.Protein.unit}}</td>
+          <td>{{nutr.Carbohydratebydifference.amount}} {{nutr.Carbohydratebydifference.unit}}</td>
+          <td>{{nutr.Totallipidfat.amount}} {{nutr.Totallipidfat.unit}}</td>
+          <td>{{nutr.SodiumNa.amount}} {{nutr.SodiumNa.unit}}</td>
+          <td>{{nutr.SugarstotalincludingNLEA.amount}} {{nutr.SugarstotalincludingNLEA.unit}}</td>
+          
+          <td>{{nutr.CalciumCa.amount}} {{nutr.CalciumCa.unit}}</td>
+          <td>{{nutr.IronFe.amount}} {{nutr.IronFe.unit}}</td>
+          <td>{{nutr.PotassiumK.amount}} {{nutr.PotassiumK.unit}}</td>
+        </tr>
+        {% endwith %}
+      </tbody>
+    </table>
   </a>
-  
+  <br>
+  {% endfor %}
 </ul>
   
 
-{% endfor %}
 
 {% endblock %}

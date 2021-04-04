@@ -2,12 +2,12 @@ from pydash import py_
 import requests
 import json
 from review.models import UsdaNutrient, UsdaFood, UsdaFoodNutrient, UsdaFoodPortion
+# from secrets import USDA_APIKEY
 
-SEARCH_ENDPOINT = 'https://api.nal.usda.gov/fdc/v1/foods/search'
-APIKEY = 'NVguQkLzba5lX36C0GNpZBCyBAvtHZ5lLbxE5RKp'
+USDA_APIKEY = 'NVguQkLzba5lX36C0GNpZBCyBAvtHZ5lLbxE5RKp'
 
 CACHE_FILENAME = 'review/usda/usda_cache.json'
-CACHE = {}
+# CACHE = {}
 
 
 def save_cache(cache_dict):
@@ -50,7 +50,7 @@ def open_cache():
         cache_dict = {}
     return cache_dict
 
-
+SEARCH_ENDPOINT = 'https://api.nal.usda.gov/fdc/v1/foods/search'
 def search(search_term):
     # Hit the search API for the Food Data Central database
     
@@ -61,7 +61,7 @@ def search(search_term):
     else:
         print('Fetching for: ', search_term)
         RESPNSE_CACHE[search_term] = requests.get(
-            f'{SEARCH_ENDPOINT}?query={search_term}&api_key={APIKEY}').json()
+            f'{SEARCH_ENDPOINT}?query={search_term}&api_key={USDA_APIKEY}').json()
         save_cache(RESPNSE_CACHE)
 
     return RESPNSE_CACHE.get(search_term)
@@ -105,7 +105,7 @@ def make_usda_food(fdcid):
     else:
         print('Fetching for: ', fdcid)
         RESPNSE_CACHE[fdcid] = requests.get(
-            f'{FOOD_ENDPOINT}/{fdcid}?format=full&api_key={APIKEY}').json()
+            f'{FOOD_ENDPOINT}/{fdcid}?format=full&api_key={USDA_APIKEY}').json()
         save_cache(RESPNSE_CACHE)
 
     response = RESPNSE_CACHE.get(fdcid)

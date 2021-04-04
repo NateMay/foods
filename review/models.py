@@ -88,6 +88,10 @@ class UsdaWikiPairing(models.Model):
 
     usda_food = models.ForeignKey(UsdaFood, on_delete=models.CASCADE)
     wiki_food = models.ForeignKey(WikiScrapeFood, on_delete=models.CASCADE)
+    data = {}
+
+    def set_data(self, key, value):
+        self.data = {key: value}
 
     def __str__(self):
         return self.wiki_food.name
