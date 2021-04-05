@@ -1,0 +1,36 @@
+{% extends "base_menu.html" %}
+
+{% block head %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Scrape a Wikipedia food page for its metadata</h1>
+</div>
+
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="form-group">
+
+    <label for="url-input" 
+      class="control-label requiredField">
+      Wikipedia link
+      <span class="asteriskField">*</span>
+    </label>
+
+    <div class="controls">
+      <input 
+        type="text" 
+        id="url-input" 
+        name="url" 
+        maxlength="1000" 
+        class="textinput textInput form-control">
+    </div>
+  </div>
+  <input type="submit" value="Scrape" class="btn btn-primary">
+</form>
+
+{% endblock %}

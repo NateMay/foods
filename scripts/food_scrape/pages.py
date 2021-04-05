@@ -19,6 +19,7 @@ PAGES_TO_SCRAPE = {
         ('Common Dips', '/wiki/Dipping_sauce'),
         ('Sauces', '/wiki/List_of_sauces'),
         ('Mushrooms', '/wiki/Edible_mushroom'),
+        ('Breakfast', 'wiki/List_of_breakfast_foods'),
     ],
     # for pages with 1 <table> of 1 category
     'single_table_category':  [

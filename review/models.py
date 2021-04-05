@@ -1,9 +1,10 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 from django.conf import settings
-# Many-to-many relationships - https://docs.djangoproject.com/en/3.1/topics/db/examples/many_to_many/
 
-
+####################
+# Wikipedia Models #
+####################
 class WikiScrapeCategory(models.Model):
     name = models.CharField(
         max_length=200,
@@ -12,14 +13,13 @@ class WikiScrapeCategory(models.Model):
             2, "Category names must be longer than 1 character")]
     )
     description = models.CharField(max_length=30000)
-    wiki_url = models.CharField(max_length=1000)
+    wiki_url = models.CharField(max_length=1000, unique=True)
     # parent_category = models.ForeignKey(
     #     'WikiScrapeCategory', on_delete=models.SET_NULL, null=True)
     foods = models.ManyToManyField('WikiScrapeFood', through='WikiCategoryAssignment')
 
     def __str__(self):
         return self.name
-
 
 class WikiScrapeFood(models.Model):
     name = models.CharField(
@@ -28,30 +28,24 @@ class WikiScrapeFood(models.Model):
         validators=[MinLengthValidator(2, "Food names must be longer than 1 character")]
     )
     description = models.CharField(max_length=30000)
-    wiki_url = models.CharField(max_length=1000)
+    wiki_url = models.CharField(max_length=1000, unique=True)
     img_src = models.CharField(max_length=1000, null=True)
     categories = models.ManyToManyField('WikiScrapeCategory', through='WikiCategoryAssignment')
-    paired = models.BooleanField(null=True)
+    paired = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
-
 class WikiCategoryAssignment(models.Model):
+    class Meta:
+        unique_together = (('food', 'category'),)
+
     food = models.ForeignKey(WikiScrapeFood, on_delete=models.CASCADE)
     category = models.ForeignKey(WikiScrapeCategory, on_delete=models.CASCADE)
 
-
-
-
-
-
-
-
-
-
-
-
+###############
+# USDA Models #
+###############
 class UsdaFood(models.Model):
     fdcId = models.CharField(max_length=20, unique=True)
     description = models.CharField(max_length=20000)
@@ -77,9 +71,6 @@ class UsdaFood(models.Model):
 
     def __str__(self):
         return self.description
-    
-
-# The FDC API provides an arrat of category strings...not sure what I should do with them just yet
 
 class UsdaWikiPairing(models.Model):
 
@@ -117,6 +108,10 @@ class UsdaFoodNutrient(models.Model):
         return self.usda_food.description + ' | ' + str(self.amount) + ' ' + self.nutrient.unitName + ' ' + self.nutrient.name
 
 class UsdaFoodPortion(models.Model):
+
+    class Meta:
+        unique_together = (('portionDescription', 'usda_food'),)
+
     portionDescription = models.CharField(max_length=200, null=True) 
     modifier = models.CharField(max_length=100)
     gramWeight = models.CharField(max_length=20)

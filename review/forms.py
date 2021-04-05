@@ -20,3 +20,17 @@ class FoodForm(forms.ModelForm):
 class UsdaPairForm(forms.Form):
     # food = forms.CharField(max_length=100)
     fdc = forms.CharField(max_length=100, required=True)
+
+
+class ScrapeFoodForm(forms.Form):
+    url = forms.CharField(max_length=1000, required=True)
+
+SCRAPE_TYPE_CHOICES =(
+    ("single", "Single Category"),
+    ("table", "Single Table"),
+    ("tables", "Tables"),
+    ("list", "<ul> List"),
+)
+class ScrapeCategoryForm(ScrapeFoodForm):
+    name = forms.CharField(max_length=1000, required=True)
+    category_scrape_type = forms.Select(choices = SCRAPE_TYPE_CHOICES)
