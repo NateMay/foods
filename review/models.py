@@ -59,15 +59,12 @@ class UsdaFood(models.Model):
 
     # GTIN or UPC code identifying the food. Only applies to Branded Foods.
     gtinUpc = models.CharField(max_length=20, null=True)
-    # finalFoodInputFoods?: FinalFoodInputFoods[]
-    # foodComponents?: any[] // ??
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    # foods = models.ManyToManyField('WikiScrapeFood', through='FdcWikiPairing')
-    
-    # nutrients # not sure how to reference
+
+    # finalFoodInputFoods?: FinalFoodInputFoods[]
+    # foodComponents?: any[] // ??
 
     def __str__(self):
         return self.description
@@ -120,3 +117,10 @@ class UsdaFoodPortion(models.Model):
 
     def __str__(self):
         return self.portionDescription
+
+class Scrapable(models.Model):
+    name = models.CharField(max_length=50)
+    url = models.CharField(max_length=1000, unique=True)
+    column = models.IntegerField(null=True)
+    isCategory = models.BooleanField(default=True)
+    type = models.CharField(max_length=20)

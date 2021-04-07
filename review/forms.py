@@ -1,5 +1,5 @@
 from django import forms
-from review.models import WikiScrapeFood, UsdaWikiPairing
+from review.models import Scrapable, WikiScrapeFood, UsdaWikiPairing
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
@@ -31,6 +31,24 @@ SCRAPE_TYPE_CHOICES =(
     ("tables", "Tables"),
     ("list", "<ul> List"),
 )
-class ScrapeCategoryForm(ScrapeFoodForm):
+
+
+class QuickScrapeCategoryForm(ScrapeFoodForm):
     name = forms.CharField(max_length=1000, required=True)
     category_scrape_type = forms.Select(choices = SCRAPE_TYPE_CHOICES)
+
+
+PAGE_TYPE_CHOICES = (
+    ("table_categories", "Singl Table of Categories"),
+    ("ul_categories", "Single Table"),
+    ("single_table_category", "Tables"),
+)
+
+
+class CatScrapableForm(forms.ModelForm):
+    class Meta:
+        model = Scrapable
+        fields = ['name', 'url', 'column', 'type']
+        widgets = {
+            'type': forms.Select(choices=PAGE_TYPE_CHOICES)
+        }

@@ -1,3 +1,5 @@
+
+
 WIKI_BASE = 'https://en.wikipedia.org'
 # This pages houses (by type) all Wikipedia Pages to be scraped
 # Overarching Page reference: https://en.wikipedia.org/wiki/Lists_of_foods

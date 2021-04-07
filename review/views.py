@@ -5,12 +5,14 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView
 from pydash import py_
-from review.forms import FoodForm, UsdaPairForm, ScrapeFoodForm, ScrapeCategoryForm
-from review.models import UsdaFoodNutrient, UsdaWikiPairing, WikiCategoryAssignment, WikiScrapeFood, WikiScrapeCategory
+from review.forms import CatScrapableForm, FoodForm, UsdaPairForm, ScrapeFoodForm, QuickScrapeCategoryForm
+from review.models import Scrapable, UsdaFoodNutrient, UsdaWikiPairing, WikiCategoryAssignment, WikiScrapeFood, WikiScrapeCategory
 from review.unsplash.unsplash_api import get_images
 from review.usda.usda_http import get_usda_results, make_usda_food
 
 from scripts.food_scrape.page_scripts import food_page, single_table_category, table_categories, ul_categories, helpers
+from scripts.food_scrape.pages import PAGES_TO_SCRAPE
+
 
 class ReviewLanding(LoginRequiredMixin, View):
     def get(self, req):
@@ -33,7 +35,7 @@ class FoodListView(ListView):
 
 
 class UsdaPairingView(View):
-    
+
     template_name = 'review/usda_pairing_form.html'
     model = WikiScrapeFood
 
@@ -50,7 +52,6 @@ class UsdaPairingView(View):
 
         food = get_object_or_404(WikiScrapeFood, id=pk)
         form = UsdaPairForm(request.POST)
-    
 
         if not form.is_valid():
             return render(request, self.template_name, {
@@ -60,14 +61,14 @@ class UsdaPairingView(View):
             })
 
         UsdaWikiPairing(
-            wiki_food= food,
-            usda_food= make_usda_food(request.POST.get('fdc'))
+            wiki_food=food,
+            usda_food=make_usda_food(request.POST.get('fdc'))
         ).save()
 
         food.paired = True
 
         food.save()
-        
+
         return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pk}))
         # return redirect(reverse_lazy('review:review_landing'))
 
@@ -80,9 +81,8 @@ class FoodMetadataUpdate(LoginRequiredMixin, View):
         return render(request, self.template_name, {
             'form': FoodForm(instance=get_object_or_404(WikiScrapeFood, id=pk)),
             'food': food,
-            'images': get_images(re.sub(r'[^A-Za-z0-9 ]+', '' ,food.name), 1)
+            'images': get_images(re.sub(r'[^A-Za-z0-9 ]+', '', food.name), 1)
         })
-    
 
     def post(self, request, pk=None):
 
@@ -105,12 +105,11 @@ class FoodMetadataUpdate(LoginRequiredMixin, View):
 class CompleteFoodView(View):
     model = WikiScrapeFood
     template_name = 'review/complete_food.html'
-    
 
     def get(self, request, pk=None):
         food = WikiScrapeFood.objects.get(id=pk)
-        usda = food.usdawikipairing_set.all()[0].usda_food;
-        
+        usda = food.usdawikipairing_set.all()[0].usda_food
+
         return render(request, self.template_name, {
             'food': food,
             'usda': usda,
@@ -171,12 +170,12 @@ class ScrapeCategories(View):
     template_name = 'review/new_category_scrape.html'
 
     def get(self, request):
-        return render(request, self.template_name, {'form': ScrapeCategoryForm()})
+        return render(request, self.template_name, {'form': QuickScrapeCategoryForm()})
 
     def post(self, request):
 
         # food = get_object_or_404(WikiScrapeFood, id=pk)
-        form = ScrapeCategoryForm(request.POST)
+        form = QuickScrapeCategoryForm(request.POST)
 
         if not form.is_valid():
             return render(request, self.template_name, {'form': form})
@@ -197,27 +196,7 @@ class ScrapeCategories(View):
                 'wiki_url': url,
             }]
 
-        for scrpaed_cat in categories:
-            category = WikiScrapeCategory(
-                name=name,
-                description=scrpaed_cat.get('description'),
-                wiki_url=scrpaed_cat.get('wiki_url')
-            )
-            category.save()
-
-            if scrpaed_cat.get('foods'):
-                for scraped_food in scrpaed_cat.get('foods'):
-                    food = WikiScrapeFood(
-                        name=scraped_food.name,
-                        description=scraped_food.description,
-                        wiki_url=scraped_food.image_src,
-                        img_src=scraped_food.wiki_url,
-                    )
-                    food.save()
-                    WikiCategoryAssignment(
-                        food=food,
-                        category=category
-                    )
+        save_categories(categories, name)
 
         return redirect(reverse_lazy('review:review_landing'))
 
@@ -226,3 +205,62 @@ class CategoryList(ListView):
     template_name = 'review/category_list.html'
     model = WikiScrapeCategory
 
+
+class Batch(View):
+
+    def get(self, request):
+
+        return render(request, 'review/batch.html', {
+            'pages': Scrapable.objects.filter(isCategory=True),
+            'dishes': PAGES_TO_SCRAPE.get('dishes'),
+            'form': CatScrapableForm(),
+            'manual_categories': PAGES_TO_SCRAPE.get('manual_categories'),
+        })
+    # def post(self, request):
+        # Scrapable
+        # Scrapable(
+        #     name = page[0],
+        #     wiki_url = page[1],
+        #     type = 'single_table_category',
+        # )
+
+
+class ScrapeCategory(View):
+    def get(self, request, pk=None):
+
+        page = Scrapable.objects.get(pk=pk)
+
+        if page.type == 'single_table_category':
+            save_categories(single_table_category.scrape_page(
+                page.url, page.name), page.name)
+        elif page.type == 'table_categories':
+            save_categories(table_categories.scrape_page(
+                page.url, page.column), page.name)
+        elif page.type == 'ul_categories':
+            save_categories(ul_categories.scrape_page(page.url), page.name)
+
+        return redirect(reverse_lazy('review:batch'))
+
+
+def save_categories(categories, name):
+    for scrpaed_cat in categories:
+        category = WikiScrapeCategory(
+            name=name,
+            description=scrpaed_cat.get('description'),
+            wiki_url=scrpaed_cat.get('wiki_url')
+        )
+        category.save()
+
+        if scrpaed_cat.get('foods'):
+            for scraped_food in scrpaed_cat.get('foods'):
+                food = WikiScrapeFood(
+                    name=scraped_food.name,
+                    description=scraped_food.description,
+                    wiki_url=scraped_food.image_src,
+                    img_src=scraped_food.wiki_url,
+                )
+                food.save()
+                WikiCategoryAssignment(
+                    food=food,
+                    category=category
+                )

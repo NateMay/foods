@@ -1,0 +1,66 @@
+{% extends "base_menu.html" %}
+{% load static %}
+
+{% block head %}
+
+<style>
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Category Pages<small>What do you want to review?</small></h1>
+</div>
+
+<button class="btn btn-primary">Scrape all</button>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <td>Category Name</td>
+      <td>Wikipedia Url</td>
+      <td>Column Number</td>
+      <td>Page Type</td>
+      <td>scrape</td>
+    </tr>
+  </thead>
+  <tbody>
+  {% for page in pages %}
+    <tr>
+      <td>{{page.name}}</td>
+      <td>{{page.url}}</td>
+      <td>{{page.column}}</td>
+      <td>{{page.type}}</td>
+      <td>
+        <a class="scrape-one" id="{{page.id}}">
+          <i class="fa fa-scroll" aria-hidden="true"></i>
+        </a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>Add Another category pages</h2>
+{% load crispy_forms_tags %}
+<form method="POST" action="">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <input type="submit" value="Save">
+</form>
+
+
+<script>
+  $('scrape-one').click(function () {
+    $.ajax({
+      url: `scrape_cat/${$(this).attr('id')}`,
+      type: "POST",
+      success: function(data) {
+        alert('success')
+      }
+    })
+  })
+</script>
+{% endblock %}
