@@ -4,6 +4,8 @@ import json
 from review.models import UsdaNutrient, UsdaFood, UsdaFoodNutrient, UsdaFoodPortion
 # from secrets import USDA_APIKEY
 
+# https://api.nal.usda.gov/fdc/v1/food/748967?format=full&api_key=NVguQkLzba5lX36C0GNpZBCyBAvtHZ5lLbxE5RKp
+
 USDA_APIKEY = 'NVguQkLzba5lX36C0GNpZBCyBAvtHZ5lLbxE5RKp'
 
 CACHE_FILENAME = 'review/usda/usda_cache.json'
@@ -110,18 +112,23 @@ def make_usda_food(fdcid):
 
     response = RESPNSE_CACHE.get(fdcid)
 
-
-    
+    cat = response.get('wweiaFoodCategory', {}).get('wweiaFoodCategoryDescription')
+    print('cat: ', cat)
+    if not cat:
+        cat = response.get('foodCategory', {}).get('description')
+        print('cat2: ', cat)
 
     usda_food = UsdaFood(
-        fdcId = response.get('fdcId'),
+        fdc_id = response.get('fdcId'),
         foodClass = response.get('foodClass'),
+        dataType = response.get('dataType'),
         description = response.get('description'),
         foodCode = response.get('foodCode'),
         totalRefuse = response.get('totalRefuse'),
         ingredients = response.get('ingredients'),
         scientificName = response.get('scientificName'),
         gtinUpc = response.get('gtinUpc'),
+        category = cat
     )
     usda_food.save()
 

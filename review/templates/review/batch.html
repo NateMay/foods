@@ -4,36 +4,39 @@
 {% block head %}
 
 <style>
-
+  .btn-primary.pull-right {
+    margin: 16px 8px;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 
 <div class="page-header">
-  <h1>Category Pages<small>What do you want to review?</small></h1>
+  <h1>Category Pages <small>What do you want to review?</small></h1>
 </div>
 
-<button class="btn btn-primary">Scrape all</button>
+<button class="btn btn-primary pull-right">Scrape all</button>
 
 <table class="table table-striped">
   <thead>
     <tr>
-      <td>Category Name</td>
-      <td>Wikipedia Url</td>
-      <td>Column Number</td>
-      <td>Page Type</td>
-      <td>scrape</td>
+      <th>Category Name</th>
+      <th>Wikipedia Url</th>
+      <th>Column Number</th>
+      <th>Page Type</th>
+      <th style="text-align: center;">scrape</th>
     </tr>
   </thead>
   <tbody>
   {% for page in pages %}
     <tr>
       <td>{{page.name}}</td>
-      <td>{{page.url}}</td>
+      <td><a href="{{page.url}}" target="_blank">{{page.uri}}</a></td>
+      
       <td>{{page.column}}</td>
       <td>{{page.type}}</td>
-      <td>
+      <td style="text-align: center;">
         <a class="scrape-one" id="{{page.id}}">
           <i class="fa fa-scroll" aria-hidden="true"></i>
         </a>

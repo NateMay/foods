@@ -1,7 +1,7 @@
 # python3 manage.py runscript load_wiki_scrape_data
 
 from numpy import isnan
-from review.models import WikiScrapeCategory, WikiScrapeFood, WikiCategoryAssignment, FdcCategory, UsdaFood, FdcCategoryAssignment, UsdaWikiPairing, UsdaNutrient, UsdaFoodMeasure
+from review.models import WikiCategory, WikiFood, WikiCategoryAssignment, FdcCategory, UsdaFood, FdcCategoryAssignment, UsdaWikiPairing, UsdaNutrient, UsdaFoodMeasure
 import pandas as pd
 import sqlite3
 from pydash import py_
@@ -16,7 +16,7 @@ def rip_category_data(wiki_categories):
     for _, row in wiki_categories.iterrows():
         categories.append({
             'id': row.id,
-            'category': WikiScrapeCategory.objects.get_or_create(
+            'category': WikiCategory.objects.get_or_create(
                 name=row['name'],
                 description=row['description'],
                 wiki_url=row['wiki_url'])[0],
@@ -32,7 +32,7 @@ def rip_food_data(wiki_foods):
     for _, row in wiki_foods.iterrows():
         foods.append({
             'id': row.id,
-            'food': WikiScrapeFood.objects.get_or_create(
+            'food': WikiFood.objects.get_or_create(
                 name=row['name'],
                 description=row['description'],
                 wiki_url=row['wiki_url'],
@@ -43,8 +43,8 @@ def rip_food_data(wiki_foods):
 
 def delete_all():
     try:
-        WikiScrapeCategory.objects.all().delete()
-        WikiScrapeFood.objects.all().delete()
+        WikiCategory.objects.all().delete()
+        WikiFood.objects.all().delete()
         WikiCategoryAssignment.objects.all().delete()
         FdcCategory.objects.all().delete()
         UsdaFood.objects.all().delete()

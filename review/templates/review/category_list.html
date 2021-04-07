@@ -39,9 +39,9 @@
 
 <br>
 
-{% if wikiscrapecategory_list %}
+{% if wikicategory_list %}
 <ul class="list-group">
-  {% for food in wikiscrapecategory_list %}
+  {% for food in wikicategory_list %}
     <li class="list-group-item">
       <a href="{% url 'review:food_usda' food.id %}">{{food.name}}</a>
     </li>

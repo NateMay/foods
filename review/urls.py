@@ -1,5 +1,6 @@
+from django import views
 from django.urls import path
-from . import views
+from .import views
 
 app_name = 'review'
 urlpatterns = [
@@ -13,5 +14,5 @@ urlpatterns = [
     path('category_scrape', views.ScrapeCategories.as_view(), name='category_scrape'),
     path('categories', views.CategoryList.as_view(), name='categories'),
     path('batch', views.Batch.as_view(), name='batch'),
-    # path('scrape_cat', views.ScrapeCategory.as_view(), name='scrape_cat'),
+    # path('scrape_cat', views2.ScrapeCategory.as_view(), name='scrape_cat'),
 ]

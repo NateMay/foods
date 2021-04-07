@@ -1,12 +1,12 @@
 from django import forms
-from review.models import Scrapable, WikiScrapeFood, UsdaWikiPairing
+from review.models import Scrapable, WikiFood, UsdaWikiPairing
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 class FoodForm(forms.ModelForm):
 
     class Meta:
-        model = WikiScrapeFood
+        model = WikiFood
         fields = '__all__'
         widgets = {
             'description': forms.Textarea(attrs={'cols': 30, 'rows': 20}),

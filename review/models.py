@@ -1,11 +1,10 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
-from django.conf import settings
 
 ####################
 # Wikipedia Models #
 ####################
-class WikiScrapeCategory(models.Model):
+class WikiCategory(models.Model):
     name = models.CharField(
         max_length=200,
         blank=False,
@@ -14,14 +13,14 @@ class WikiScrapeCategory(models.Model):
     )
     description = models.CharField(max_length=30000)
     wiki_url = models.CharField(max_length=1000, unique=True)
-    # parent_category = models.ForeignKey(
-    #     'WikiScrapeCategory', on_delete=models.SET_NULL, null=True)
-    foods = models.ManyToManyField('WikiScrapeFood', through='WikiCategoryAssignment')
+    parent_category = models.ForeignKey(
+        'WikiCategory', on_delete=models.SET_NULL, null=True)
+    foods = models.ManyToManyField('WikiFood', through='WikiCategoryAssignment', blank=True)
 
     def __str__(self):
         return self.name
 
-class WikiScrapeFood(models.Model):
+class WikiFood(models.Model):
     name = models.CharField(
         max_length=200,
         blank=False,
@@ -30,7 +29,7 @@ class WikiScrapeFood(models.Model):
     description = models.CharField(max_length=30000)
     wiki_url = models.CharField(max_length=1000, unique=True)
     img_src = models.CharField(max_length=1000, null=True)
-    categories = models.ManyToManyField('WikiScrapeCategory', through='WikiCategoryAssignment')
+    categories = models.ManyToManyField('WikiCategory', through='WikiCategoryAssignment', blank=True)
     paired = models.BooleanField(default=False)
 
     def __str__(self):
@@ -40,22 +39,29 @@ class WikiCategoryAssignment(models.Model):
     class Meta:
         unique_together = (('food', 'category'),)
 
-    food = models.ForeignKey(WikiScrapeFood, on_delete=models.CASCADE)
-    category = models.ForeignKey(WikiScrapeCategory, on_delete=models.CASCADE)
+    food = models.ForeignKey(WikiFood, on_delete=models.CASCADE)
+    category = models.ForeignKey(WikiCategory, on_delete=models.CASCADE)
 
 ###############
 # USDA Models #
 ###############
+
+# 'Survey (FNDDS)' | 'Branded' | 'Foundation' | 'SR Legacy'
+# class UsdaDBSource(models.Model):
+#     source = models.CharField(max_length=200) 
+
 class UsdaFood(models.Model):
-    fdcId = models.CharField(max_length=20, unique=True)
+    fdc_id = models.CharField(max_length=20, unique=True, primary_key=True)
     description = models.CharField(max_length=20000)
 
     # 'Survey (FNDDS)' | 'Branded' | 'Foundation' | 'SR Legacy'
+    dataType = models.CharField(max_length=200) 
     foodClass = models.CharField(max_length=200) 
     foodCode = models.CharField(max_length=20, null=True) # FNDDS id
     totalRefuse = models.CharField(max_length=20, null=True)
     ingredients = models.CharField(max_length=20000, null=True)
     scientificName = models.CharField(max_length=500, null=True)
+    category = models.CharField(max_length=500, null=True)
 
     # GTIN or UPC code identifying the food. Only applies to Branded Foods.
     gtinUpc = models.CharField(max_length=20, null=True)
@@ -75,7 +81,7 @@ class UsdaWikiPairing(models.Model):
         unique_together = (('usda_food', 'wiki_food'),)
 
     usda_food = models.ForeignKey(UsdaFood, on_delete=models.CASCADE)
-    wiki_food = models.ForeignKey(WikiScrapeFood, on_delete=models.CASCADE)
+    wiki_food = models.ForeignKey(WikiFood, on_delete=models.CASCADE)
     data = {}
 
     def set_data(self, key, value):
@@ -90,7 +96,7 @@ class UsdaNutrient(models.Model):
 
     number = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    rank = models.IntegerField(null=True)
+    rank = models.PositiveSmallIntegerField(null=True)
     unitName = models.CharField(max_length=100)
 
     def __str__(self):
@@ -112,7 +118,7 @@ class UsdaFoodPortion(models.Model):
     portionDescription = models.CharField(max_length=200, null=True) 
     modifier = models.CharField(max_length=100)
     gramWeight = models.CharField(max_length=20)
-    sequenceNumber = models.IntegerField(null=True)
+    sequenceNumber = models.PositiveIntegerField(null=True)
     usda_food = models.ForeignKey(UsdaFood,on_delete=models.CASCADE)
 
     def __str__(self):
@@ -121,6 +127,14 @@ class UsdaFoodPortion(models.Model):
 class Scrapable(models.Model):
     name = models.CharField(max_length=50)
     url = models.CharField(max_length=1000, unique=True)
-    column = models.IntegerField(null=True)
+    column = models.PositiveSmallIntegerField(null=True)
     isCategory = models.BooleanField(default=True)
     type = models.CharField(max_length=20)
+
+    duration = models.DurationField(null=True)
+    food_count = models.PositiveIntegerField(null=True)
+
+    @property
+    def uri(self):
+        return self.url.split('/')[-1]
+

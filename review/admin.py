@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from review.models import WikiScrapeCategory, WikiScrapeFood
+from review.models import WikiCategory, WikiFood
 
-admin.site.register(WikiScrapeCategory)
-admin.site.register(WikiScrapeFood)
+admin.site.register(WikiCategory)
+admin.site.register(WikiFood)
