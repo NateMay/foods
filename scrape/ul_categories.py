@@ -1,12 +1,28 @@
 from scripts.food_scrape.wikipedia import wiki_http as http
-from scrape import helpers, food_page
-
-from review.models import WikiCategory, WikiCategoryAssignment
+from scripts.food_scrape.page_scripts import helpers, food_page
+from scripts.food_scrape.pages import PAGES_TO_SCRAPE, WIKI_BASE
+from scripts.food_scrape.models import WikiCategory
 
 # scapes pages that have several categories, but the foods are
 # in a <ul>
 
-def scrape_page(page_url, parent_category):
+def scrape():
+    categories = []
+    for category in PAGES_TO_SCRAPE.get('ul_categories'):
+        page_url = f'{WIKI_BASE}{category[1]}'
+        parent_category = category[0]
+
+        categories.append(WikiCategory(
+            parent_category,
+            helpers.scape_description(page_url), 
+            page_url, 
+            [],
+            scrape_page(page_url)
+        ))
+    return categories
+
+
+def scrape_page(page_url):
     ''' scrapes pages with the structure:
         1) h2 = name
         2) p = description
@@ -14,17 +30,11 @@ def scrape_page(page_url, parent_category):
     '''
     soup = http.request(page_url)
 
-    parent, created = WikiCategory.objects.get_or_create(
-        name=parent_category,
-        description=helpers.scape_description(page_url, soup),
-        wiki_url=page_url,
-    )
-    if created:
-        parent.save()
-
     # remove footnote superscripts
     for superscript in soup.select('sup'):
         superscript.extract()
+
+    results = []
 
     # scrape from the table of contents
     for anchor in soup.select('#toc ul > li > a'):
@@ -38,24 +48,14 @@ def scrape_page(page_url, parent_category):
         # selector: 'p, div' did not work
         description = h2.find_next_sibling("p") or h2.find_next_sibling("div")
 
+        results.append(WikiCategory(
+            h2.text.replace('[edit]', ''),
+            description.text.strip(),
+            page_url,
+            getUlFoods(h2)
+        ))
 
-        category, created = WikiCategory.objects.get_or_create(
-            name = h2.text.replace('[edit]', ''),
-            description = description.text.strip(),
-            wiki_url = page_url,
-            parent_category = parent
-        )
-        if created:
-            category.save()
-
-        for food in getUlFoods(h2):
-            assign, created = WikiCategoryAssignment.objects.get_or_create(
-                food=food,
-                category=category
-            )
-        if created: assign.save()
-
-    
+    return results
 
 
 def getUlFoods(h2):

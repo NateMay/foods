@@ -53,37 +53,28 @@ class ScrapeCategories(View):
         stype = request.POST.get('category_scrape_type')
         url = request.POST.get('url')
         name = request.POST.get('name')
-        categories = None
+        
         if stype == 'table':
             single_table_category.scrape_page(url, name)
         elif stype == 'tables':
-            categories = table_categories.scrape_page(url, 1)
+            table_categories.scrape_page(url, 1)
         elif stype == 'list':
-            categories = ul_categories.scrape_page(url)
+            ul_categories.scrape_page(url)
         elif stype == 'single':
-            categories = [{
-                'description': helpers.scape_description(url),
-                'wiki_url': url,
-            }]
-
-        save_categories(categories, name)
+            cat, created = WikiCategory(
+                name=name,
+                description = helpers.scape_description(url),
+                wiki_url = url,
+            )
+            if created: cat.save()
+            
 
         return redirect(reverse_lazy('review:review_landing'))
 
 
 class ScrapeCategory(View):
     def post(self, request, pk=None):
-        page = Scrapable.objects.get(pk=pk)
-        categories = []
-        if page.type == 'table':
-            categories = single_table_category.scrape_page(page.url, page.name)
-        elif page.type == 'tables':
-            categories = table_categories.scrape_page(page.url, page.column)
-        elif page.type == 'list':
-            categories = ul_categories.scrape_page(page.url)
-        
-        save_categories(categories, page.name)
-
+        scrape(pk)
         return redirect(reverse_lazy('review:batch'))
 
 class Batch(View):
@@ -111,33 +102,29 @@ class Batch(View):
         fw = open(filename, "w")
         fw.write(dumped_json_cache)
         fw.close()
-        # Scrapable
-        # Scrapable(
-        #     name = page[0],
-        #     wiki_url = page[1],
-        #     type = 'single_table_category',
-        # )
 
 
 class ScrapeCategory(View):
     def get(self, request, pk=None):
-
-        page = Scrapable.objects.get(pk=pk)
-
-        print('page.type', page.type)
-        if page.type == 'single_table_category':
-            single_table_category.scrape_page(page.url, page.name)
-
-        elif page.type == 'table_categories':
-            table_categories.scrape_page(page.url, page.column, page.name)
-
-        # elif page.type == 'ul_categories':
-        #     save_categories(ul_categories.scrape_page(page.url), page.name)
-    
-        page.scraped = True
-        page.save()
-
+        scrape(pk)
         return redirect(reverse_lazy('review:batch'))
+
+
+def scrape(pk):
+
+    page = Scrapable.objects.get(pk=pk)
+
+    if page.type == 'single_table_category':
+        single_table_category.scrape_page(page.url, page.name)
+
+    elif page.type == 'table_categories':
+        table_categories.scrape_page(page.url, page.column, page.name)
+
+    elif page.type == 'ul_categories':
+        ul_categories.scrape_page(page.url, page.name)
+
+    page.scraped = True
+    page.save()
 
 
 def save_categories(categories, name):
