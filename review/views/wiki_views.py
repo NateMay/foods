@@ -6,7 +6,7 @@ from django.views import View
 from django.views.generic import ListView
 from pydash import py_
 from review.forms import  FoodForm
-from review.models import WikiFood, WikiCategory
+from review.models import UsdaWikiPairing, WikiCategoryAssignment, WikiFood, WikiCategory
 from review.unsplash.unsplash_api import get_images
 
 from scripts.food_scrape.pages import PAGES_TO_SCRAPE
@@ -54,7 +54,11 @@ class FoodMetadataUpdate(LoginRequiredMixin, View):
         food.categories.set(form.cleaned_data['categories'])
         food.save()
 
-        return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pk}))
+        # try:
+        #     UsdaWikiPairing.objects.get(wiki_food=pk)
+        #     return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pk}))
+        # except:
+        return redirect(reverse_lazy('review:food_usda', kwargs={'pk': pk}))
 
 
 

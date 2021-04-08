@@ -1,6 +1,6 @@
 from scripts.food_scrape.wikipedia import wiki_http as http
 from scripts.food_scrape.page_scripts import helpers
-from scripts.food_scrape.models import WikiFood
+from review.models import WikiFood
 
 # Logic for scraping a food page
 
@@ -18,9 +18,11 @@ def create_food_url(page_url):
     # contructs a WikiFood object by scraping a food page
     soup = http.request(page_url)
 
-    return WikiFood(
-        helpers.scrub_string(soup.find('h1').text).replace(' as food', ''),
-        helpers.scape_description(page_url, soup),
-        helpers.scape_primary_image(soup),
-        page_url
+    food, created = WikiFood.objects.get_or_create(
+        name = helpers.scrub_string(soup.find('h1').text).replace(' as food', ''),
+        description = helpers.scape_description(page_url, soup),
+        img_src = helpers.scape_primary_image(soup),
+        wiki_url = page_url
     )
+    if created: food.save()
+    return food

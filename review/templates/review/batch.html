@@ -37,9 +37,11 @@
       <td>{{page.column}}</td>
       <td>{{page.type}}</td>
       <td style="text-align: center;">
-        <a class="scrape-one" id="{{page.id}}">
-          <i class="fa fa-scroll" aria-hidden="true"></i>
-        </a>
+        <form action="" method="POST">
+          <a class="scrape-one" href="{% url 'review:test' page.id %}">
+            <i class="fa fa-scroll" aria-hidden="true"></i>
+          </a>
+        </form>
       </td>
     </tr>
   {% endfor %}

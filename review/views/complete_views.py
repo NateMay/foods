@@ -4,19 +4,17 @@ from django.views import View
 from review.models import  UsdaFoodNutrient, UsdaWikiPairing, WikiFood
 
 
-
 class CompleteFoodView(View):
     model = WikiFood
     template_name = 'review/complete_food.html'
 
     def get(self, request, pk=None):
-        food = WikiFood.objects.get(id=pk)
-        usda = food.usdawikipairing_set.all()[0].usda_food
-
+        
+        pair = UsdaWikiPairing.objects.get(id=pk)
         return render(request, self.template_name, {
-            'food': food,
-            'usda': usda,
-            'foodNutrients': UsdaFoodNutrient.objects.filter(usda_food=usda.fdc_id),
+            'food': pair.wiki_food,
+            'usda': pair.usda_food,
+            'foodNutrients': UsdaFoodNutrient.objects.filter(usda_food=pair.usda_food.fdc_id),
         })
 
 
@@ -25,8 +23,9 @@ class CompletedListView(View):
 
     def get(self, request, ):
         completed = UsdaWikiPairing.objects.all()
-
+    
         for pair in completed:
+            # process the nutrition data for the template
             nutrients = {}
             for nutr in UsdaFoodNutrient.objects.filter(usda_food=pair.usda_food.fdc_id):
                 key = re.sub(r'[^a-zA-Z0-9]', '', nutr.nutrient.name)
@@ -35,6 +34,7 @@ class CompletedListView(View):
                     'amount': nutr.amount,
                     'unit': nutr.nutrient.unitName,
                 }
+
             pair.set_data('nutrients', nutrients)
 
         return render(request, self.template_name, {

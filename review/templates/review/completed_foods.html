@@ -28,7 +28,7 @@
 </div>
 <ul class="list-group">
   {% for pair in completed %}
-  <a class="list-group-item" href="{% url 'review:complete_food' pair.wiki_food.id %}">
+  <a class="list-group-item" href="{% url 'review:complete_food' pair.id %}">
     <img src="{{pair.wiki_food.img_src}}" alt="..." class="img-thumbnail">
     <h3>{{pair.wiki_food.name}}</h3>
     <p class="desc">{{pair.wiki_food.description}}</p>
@@ -54,7 +54,7 @@
           <td>{{nutr.Carbohydratebydifference.amount}} {{nutr.Carbohydratebydifference.unit}}</td>
           <td>{{nutr.Totallipidfat.amount}} {{nutr.Totallipidfat.unit}}</td>
           <td>{{nutr.SodiumNa.amount}} {{nutr.SodiumNa.unit}}</td>
-          <td>{{nutr.SugarstotalincludingNLEA.amount}} {{nutr.SugarstotalincludingNLEA.unit}}</td>
+          <td>{{nutr.SugarstotalincludingNLEA.amount}} {{nutr.SugarstotalincludingNLEA.unit}} {{nutr.SugarsTotalNLEA.amount}} {{nutr.SugarsTotalNLEA.unit}}</td>
           
           <td>{{nutr.CalciumCa.amount}} {{nutr.CalciumCa.unit}}</td>
           <td>{{nutr.IronFe.amount}} {{nutr.IronFe.unit}}</td>

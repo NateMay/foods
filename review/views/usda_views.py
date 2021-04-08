@@ -40,8 +40,6 @@ class UsdaPairingView(View):
             usda_food=make_usda_food(request.POST.get('fdc'))
         ).save()
 
-        food.paired = True
-
         food.save()
 
         return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pk}))

@@ -12,7 +12,7 @@ class WikiCategory(models.Model):
             2, "Category names must be longer than 1 character")]
     )
     description = models.CharField(max_length=30000)
-    wiki_url = models.CharField(max_length=1000, unique=True)
+    wiki_url = models.CharField(max_length=1000, null=True)
     parent_category = models.ForeignKey(
         'WikiCategory', on_delete=models.SET_NULL, null=True)
     foods = models.ManyToManyField('WikiFood', through='WikiCategoryAssignment', blank=True)
@@ -30,7 +30,6 @@ class WikiFood(models.Model):
     wiki_url = models.CharField(max_length=1000, unique=True)
     img_src = models.CharField(max_length=1000, null=True)
     categories = models.ManyToManyField('WikiCategory', through='WikiCategoryAssignment', blank=True)
-    paired = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -131,10 +130,10 @@ class Scrapable(models.Model):
     isCategory = models.BooleanField(default=True)
     type = models.CharField(max_length=20)
 
-    duration = models.DurationField(null=True)
+    scraped = models.BooleanField(default=False)
     food_count = models.PositiveIntegerField(null=True)
 
     @property
     def uri(self):
-        return self.url.split('/')[-1]
+        return self.url.split('/')[-1].replace('_', ' ')
 

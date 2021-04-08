@@ -5,18 +5,19 @@ from django.contrib.auth.models import User;
 from django.core.management import call_command
 import subprocess
 from pathlib import Path
+import time
 
 def run():
   
-  proc = subprocess.Popen(f'rm {BASE_DIR}/db.sqlite3', shell=True)
-  proc.terminate()
-  proc = subprocess.Popen(f'rm -rfv {BASE_DIR}/review/migrations', shell=True)
-  proc.terminate()
-  proc = subprocess.Popen(f'touch {BASE_DIR}/review/migrations/__init__.py', shell=True)
-  proc.terminate()
-
+  subprocess.Popen(f'rm {BASE_DIR}/db.sqlite3', shell=True)
+  subprocess.Popen(f'rm -rfv {BASE_DIR}/review/migrations', shell=True)  
+  subprocess.Popen(f'mkdir {BASE_DIR}/review/migrations', shell=True)
+  subprocess.Popen(f'touch {BASE_DIR}/review/migrations/__init__.py', shell=True)
+  
   call_command("makemigrations", interactive=False)
+  time.sleep(2) 
   call_command("migrate", interactive=False)
+  # proc.terminate()
 
   try:
     User.objects.create_superuser('n8', 'natmay@umich.edu', 'Mj39lK9sy')
@@ -37,6 +38,6 @@ def run():
     ).save()
     
 
-# # TODO
-# # for category in scrappables_dict.get('manual_categories'):
-# # for category in scrappables_dict.get('dishes'):
+# TODO
+# for category in scrappables_dict.get('manual_categories'):
+# for category in scrappables_dict.get('dishes'):

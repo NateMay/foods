@@ -5,8 +5,9 @@ from django.views import View
 from review.forms import CatScrapableForm, ScrapeFoodForm, QuickScrapeCategoryForm
 from review.models import Scrapable, WikiCategoryAssignment, WikiFood, WikiCategory
 import json
-from scripts.food_scrape.page_scripts import food_page, single_table_category, table_categories, ul_categories, helpers
-
+from scripts.food_scrape.page_scripts import food_page, ul_categories, helpers
+from scrape import single_table_category, table_categories
+# from scripts.food_scrape.models import WikiCategory as 
 
 class ScrapeFood(View):
     template_name = 'review/new_food_scrape.html'
@@ -54,7 +55,7 @@ class ScrapeCategories(View):
         name = request.POST.get('name')
         categories = None
         if stype == 'table':
-            categories = single_table_category.scrape_page(url, name)
+            single_table_category.scrape_page(url, name)
         elif stype == 'tables':
             categories = table_categories.scrape_page(url, 1)
         elif stype == 'list':
@@ -70,17 +71,31 @@ class ScrapeCategories(View):
         return redirect(reverse_lazy('review:review_landing'))
 
 
+class ScrapeCategory(View):
+    def post(self, request, pk=None):
+        page = Scrapable.objects.get(pk=pk)
+        categories = []
+        if page.type == 'table':
+            categories = single_table_category.scrape_page(page.url, page.name)
+        elif page.type == 'tables':
+            categories = table_categories.scrape_page(page.url, page.column)
+        elif page.type == 'list':
+            categories = ul_categories.scrape_page(page.url)
+        
+        save_categories(categories, page.name)
+
+        return redirect(reverse_lazy('review:batch'))
 
 class Batch(View):
 
     def get(self, request):
 
         return render(request, 'review/batch.html', {
-            'pages': Scrapable.objects.filter(isCategory=True, duration__isnull=True),
+            'pages': Scrapable.objects.filter(isCategory=True, scraped=False),
             'form': CatScrapableForm(),
         })
 
-    def post(self, request):
+    def post(self, request, pk=None):
         filename = '/Users/nathanielmay/Code/python/review/scrape/scrappable.json'
         scrappables = open(filename, 'r')
         dumped_json_cache = json.dumps(scrappables)
@@ -109,29 +124,33 @@ class ScrapeCategory(View):
 
         page = Scrapable.objects.get(pk=pk)
 
+        print('page.type', page.type)
         if page.type == 'single_table_category':
-            save_categories(single_table_category.scrape_page(
-                page.url, page.name), page.name)
+            single_table_category.scrape_page(page.url, page.name)
+
         elif page.type == 'table_categories':
-            save_categories(table_categories.scrape_page(
-                page.url, page.column), page.name)
-        elif page.type == 'ul_categories':
-            save_categories(ul_categories.scrape_page(page.url), page.name)
+            table_categories.scrape_page(page.url, page.column, page.name)
+
+        # elif page.type == 'ul_categories':
+        #     save_categories(ul_categories.scrape_page(page.url), page.name)
+    
+        page.scraped = True
+        page.save()
 
         return redirect(reverse_lazy('review:batch'))
 
 
 def save_categories(categories, name):
-    for scrpaed_cat in categories:
+    for scraped_cat in categories:
         category = WikiCategory(
             name=name,
-            description=scrpaed_cat.get('description'),
-            wiki_url=scrpaed_cat.get('wiki_url')
+            description=scraped_cat.get('description'),
+            wiki_url=scraped_cat.get('wiki_url')
         )
         category.save()
 
-        if scrpaed_cat.get('foods'):
-            for scraped_food in scrpaed_cat.get('foods'):
+        if scraped_cat.get('foods'):
+            for scraped_food in scraped_cat.get('foods'):
                 food = WikiFood(
                     name=scraped_food.name,
                     description=scraped_food.description,
