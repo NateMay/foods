@@ -17,7 +17,7 @@ class FoodListView(ListView):
     def get_context_data(self, **kwargs):
         # context = super().get_context_data(**kwargs)
         context = {
-            'wikifood_list':WikiFood.objects.all().order_by('+name')[:25]
+            'wikifood_list':WikiFood.objects.all().order_by('name')[:50]
         }
         
         term = self.request.GET.get('filter') or ''
