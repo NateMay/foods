@@ -30,6 +30,9 @@
 
 {% block content %}
 
+{% load stats %}
+{% get_stats %}
+
 <div class="page-header">
   <h1>{{ food.name }}</h1>
 </div>

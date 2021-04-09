@@ -23,7 +23,14 @@
 </style>
 {% endblock %}
 
+
+
 {% block content %}
+
+
+{% load stats %}
+{% get_stats %}
+
   <div class="page-header">
     <h1>Nutrition Data Aggregator <small>What do you want to review?</small></h1>
   </div>
@@ -51,7 +58,7 @@
             <h3>Food Categories</h3>
             <p>Thie workflow allows me to manages the category metadata and heirarchy</p>
             <p>
-                <a href="#" class="btn btn-primary" role="button">Button</a> 
+                <a href="{% url 'review:categories' %}" class="btn btn-primary" role="button">Review Categories</a> 
             </p>
           </div>
         </div>

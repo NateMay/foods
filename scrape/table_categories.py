@@ -1,5 +1,5 @@
 from scrape import food_page, helpers
-from scripts.food_scrape.wikipedia import wiki_http as http
+from scrape.wikipedia import wiki_http as http
 from review.models import WikiCategory, WikiCategoryAssignment, WikiFood
 
 

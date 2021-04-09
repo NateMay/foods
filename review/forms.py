@@ -1,5 +1,5 @@
 from django import forms
-from review.models import Scrapable, WikiFood, UsdaWikiPairing
+from review.models import Scrapable, WikiCategory, WikiFood, UsdaWikiPairing
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
@@ -17,6 +17,18 @@ class FoodForm(forms.ModelForm):
         css = {'all': ('/static/admin/css/widgets.css',), }
         js = ('/admin/jsi18n',)
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = WikiCategory
+        fields = '__all__'
+        widgets = {
+            'description': forms.Textarea(attrs={'cols': 30, 'rows': 20}),
+            'parent_category': forms.Select(attrs={'class':'form-control'})
+            # 'categories': FilteredSelectMultiple("Categories", is_stacked=False)
+        }
+    class Media:
+        css = {'all': ('/static/admin/css/widgets.css',), }
+        js = ('/admin/jsi18n',)
 class UsdaPairForm(forms.Form):
     # food = forms.CharField(max_length=100)
     fdc = forms.CharField(max_length=100, required=True)

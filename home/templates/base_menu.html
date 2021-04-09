@@ -1,4 +1,5 @@
 {% extends "base_bootstrap.html" %}
+
 {% block navbar %}
 {% load app_tags %}
 <nav class="navbar navbar-default navbar-inverse">
@@ -14,6 +15,7 @@
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
             <li><a href="/foods">Foods</a></li>
+            <li><a href="/categories">Categories</a></li>
             <li style="color:#fff; margin-top: 14px;">|</li>
             <li><a href="/completed">Completed</a></li>
             <li class="dropdown">

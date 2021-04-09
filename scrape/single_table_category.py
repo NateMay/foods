@@ -1,5 +1,5 @@
 from review.models import WikiCategoryAssignment, WikiCategory
-from scripts.food_scrape.wikipedia import wiki_http as http
+from scrape.wikipedia import wiki_http as http
 from scrape import food_page, helpers
 # logic for pages which have a single, giant table of foods
 

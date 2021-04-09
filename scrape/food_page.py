@@ -1,5 +1,5 @@
-from scripts.food_scrape.wikipedia import wiki_http as http
-from scripts.food_scrape.page_scripts import helpers
+from scrape.wikipedia import wiki_http as http
+from scrape import helpers
 from review.models import WikiFood
 
 # Logic for scraping a food page

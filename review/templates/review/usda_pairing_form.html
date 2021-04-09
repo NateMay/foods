@@ -28,9 +28,13 @@
 {% endblock %}
 
 {% block content %}
-<!-- <div class="page-header">
-  <h1>{{ food.name }}</h1>
-</div> -->
+
+
+{% load stats %}
+{% get_stats %}
+<div class="page-header">
+  <h1>Pair this metadata with its nutrition</h1>
+</div>
 <div class="container-fluid">
 
   

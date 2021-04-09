@@ -5,9 +5,8 @@ from django.views import View
 from review.forms import CatScrapableForm, ScrapeFoodForm, QuickScrapeCategoryForm
 from review.models import Scrapable, WikiCategoryAssignment, WikiFood, WikiCategory
 import json
-from scripts.food_scrape.page_scripts import food_page, ul_categories, helpers
-from scrape import single_table_category, table_categories
-# from scripts.food_scrape.models import WikiCategory as 
+from scrape import single_table_category, table_categories, ul_categories, food_page, helpers
+
 
 class ScrapeFood(View):
     template_name = 'review/new_food_scrape.html'

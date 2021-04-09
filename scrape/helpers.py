@@ -1,7 +1,6 @@
-from scripts.food_scrape.wikipedia import wiki_http as http
-from scripts.food_scrape.pages import WIKI_BASE
+from scrape.wikipedia import wiki_http as http
 import re
-
+WIKI_BASE = 'https://en.wikipedia.org'
 
 def scrub_string(value):
     # gets a content of text ready fo the database

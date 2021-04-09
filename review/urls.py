@@ -7,12 +7,16 @@ urlpatterns = [
     path('', views.ReviewLanding.as_view(), name='review_landing'),
     path('foods', views.FoodListView.as_view(), name='foods'),
     path('food_metadata/<int:pk>', views.FoodMetadataUpdate.as_view(), name='food_metadata'),
-path('pair/<int:pk>', views.UsdaPairingView.as_view(), name='food_usda'),
+    path('pair/<int:pk>', views.UsdaPairingView.as_view(), name='food_usda'),
+
+    path('categories', views.CategoriesListView.as_view(), name='categories'),
+    path('category_metadata/<int:pk>', views.CategoryMetadataUpdate.as_view(), name='category_metadata'),
+
     path('complete/<int:pk>', views.CompleteFoodView.as_view(), name='complete_food'),
     path('completed', views.CompletedListView.as_view(), name='completed'),
+    
     path('food_scrape', views.ScrapeFood.as_view(), name='food_scrape'),
     path('category_scrape', views.ScrapeCategories.as_view(), name='category_scrape'),
     path('category_scrape/<int:pk>', views.ScrapeCategory.as_view(), name='test'),
-    path('categories', views.CategoryList.as_view(), name='categories'),
     path('batch', views.Batch.as_view(), name='batch'),
 ]

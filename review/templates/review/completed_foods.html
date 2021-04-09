@@ -23,9 +23,30 @@
 
 {% block content %}
 
+
+{% load stats %}
+{% get_stats %}
+
 <div class="page-header">
   <h1>Completed Foods</h1>
 </div>
+
+<form method="GET" id="search_form" action="{% url 'review:completed' %}?filter='{{ term }}'">
+  {% csrf_token %}
+  <div class="input-group">
+    <input id="filter" name="filter" placeholder="Filter Foods" class="form-control" type="text" value="{{term}}">
+    
+    <span class="input-group-btn">
+      <button class="btn btn-default" id="search_button"><i class="fa fa-search"></i></button>
+    </span>
+  </div>
+  {% if term %}
+    <small>filtering: "{{term}}"</small>
+  {% endif %}
+
+</form>
+<br>
+
 <ul class="list-group">
   {% for pair in completed %}
   <a class="list-group-item" href="{% url 'review:complete_food' pair.id %}">
