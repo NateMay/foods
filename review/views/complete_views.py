@@ -1,9 +1,10 @@
 import re
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls.base import reverse_lazy
 from django.views import View
 from review.models import UsdaFoodNutrient, UsdaWikiPairing, WikiFood
 from pydash import py_
-
+from algolia.upload import create
 
 class CompleteFoodView(View):
     model = WikiFood
@@ -11,11 +12,12 @@ class CompleteFoodView(View):
 
     def get(self, request, pk=None):
 
-        pair = UsdaWikiPairing.objects.get(id=pk)
+    
+        pair = UsdaWikiPairing.objects.get(pk=pk)
         return render(request, self.template_name, {
             'food': pair.wiki_food,
             'usda': pair.usda_food,
-            'foodNutrients': UsdaFoodNutrient.objects.filter(usda_food=pair.usda_food.fdc_id),
+            'foodNutrients': UsdaFoodNutrient.objects.filter(usda_food=pair.usda_food),
         })
 
 
@@ -25,9 +27,9 @@ class CompletedListView(View):
     def get(self, request, ):
         term = self.request.GET.get('filter') or ''
 
-        all = UsdaWikiPairing.objects.all()
+        not_indexed = UsdaWikiPairing.objects.filter(indexed=False)
         completed = py_.filter(
-            all, lambda pair: term.lower() in pair.wiki_food.name.lower())
+            not_indexed, lambda pair: term.lower() in pair.wiki_food.name.lower())
 
         for pair in completed:
             # process the nutrition data for the template
@@ -38,11 +40,28 @@ class CompletedListView(View):
                     'nutrient': nutr.nutrient.name,
                     'amount': nutr.amount,
                     'unit': nutr.nutrient.unitName,
-                    'term': term
                 }
 
             pair.set_data('nutrients', nutrients)
 
         return render(request, self.template_name, {
-            'completed': completed
+            'completed': completed,
+            'term': term
+        })
+
+    def post(self, request):
+        create(request.POST.get('pair_id'))
+        return redirect(reverse_lazy('review:completed'))
+
+class IndexedListView(View):
+    template_name = 'review/indexed_foods.html'
+    def get(self, request):
+        term = self.request.GET.get('filter') or ''
+        all_indexed = UsdaWikiPairing.objects.filter(indexed=True)
+        filtered_indexed = py_.filter(
+            all_indexed, lambda pair: term.lower() in pair.wiki_food.name.lower())
+
+        return render(request, self.template_name, {
+            'foods': filtered_indexed,
+            'term': term
         })

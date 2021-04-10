@@ -73,7 +73,7 @@ class UsdaFood(models.Model):
     # foodComponents?: any[] // ??
 
     def __str__(self):
-        return self.description
+        return self.fdc_id
 
 class UsdaWikiPairing(models.Model):
 
@@ -82,6 +82,7 @@ class UsdaWikiPairing(models.Model):
 
     usda_food = models.ForeignKey(UsdaFood, on_delete=models.CASCADE)
     wiki_food = models.ForeignKey(WikiFood, on_delete=models.CASCADE)
+    indexed = models.BooleanField(default=False)
     data = {}
 
     def set_data(self, key, value):

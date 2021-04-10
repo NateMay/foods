@@ -35,14 +35,15 @@ class UsdaPairingView(View):
                 'usda_foods': get_usda_results(food.name)
             })
 
-        UsdaWikiPairing(
+        pair = UsdaWikiPairing(
             wiki_food=food,
             usda_food=make_usda_food(request.POST.get('fdc'))
-        ).save()
+        )
+        pair.save()
 
         food.save()
 
-        return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pair.id}))
         # return redirect(reverse_lazy('review:review_landing'))
 
 

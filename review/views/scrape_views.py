@@ -60,7 +60,7 @@ class ScrapeCategories(View):
         elif stype == 'list':
             ul_categories.scrape_page(url)
         elif stype == 'single':
-            cat, created = WikiCategory(
+            cat, created = WikiCategory.objects.get_or_create(
                 name=name,
                 description = helpers.scape_description(url),
                 wiki_url = url,
@@ -68,7 +68,7 @@ class ScrapeCategories(View):
             if created: cat.save()
             
 
-        return redirect(reverse_lazy('review:review_landing'))
+        return redirect(reverse_lazy('review:category_scrape'))
 
 
 class ScrapeCategory(View):

@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('complete/<int:pk>', views.CompleteFoodView.as_view(), name='complete_food'),
     path('completed', views.CompletedListView.as_view(), name='completed'),
+    path('indexed', views.IndexedListView.as_view(), name='indexed'),
     
     path('food_scrape', views.ScrapeFood.as_view(), name='food_scrape'),
     path('category_scrape', views.ScrapeCategories.as_view(), name='category_scrape'),

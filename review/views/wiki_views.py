@@ -17,7 +17,7 @@ class FoodListView(ListView):
     def get_context_data(self, **kwargs):
         # context = super().get_context_data(**kwargs)
         context = {
-            'wikifood_list':WikiFood.objects.all().order_by('name')[:50]
+            'wikifood_list':WikiFood.objects.all().order_by('name')
         }
         
         term = self.request.GET.get('filter') or ''
@@ -90,8 +90,7 @@ class CategoryMetadataUpdate(LoginRequiredMixin, View):
 
         category = get_object_or_404(WikiCategory, id=pk)
         form = CategoryForm(request.POST, instance=category)
-        form.categories = None
-        print(form)
+
         if not form.is_valid():
             return render(request, self.template_name, {
                 'form': form,
@@ -99,11 +98,10 @@ class CategoryMetadataUpdate(LoginRequiredMixin, View):
             })
 
         category = form.save(commit=False)
-        category.categories.set(form.cleaned_data['categories'])
         category.save()
 
         # try:
         #     UsdaWikiPairing.objects.get(wiki_category=pk)
         #     return redirect(reverse_lazy('review:complete_category', kwargs={'pk': pk}))
         # except:
-        return redirect(reverse_lazy('review:category_usda', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('review:category_metadata', kwargs={'pk': pk}))

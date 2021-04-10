@@ -2,3 +2,4 @@
 *.py[cod]
 **/mysecrets.py
 **/*cache.json
+diag.sh

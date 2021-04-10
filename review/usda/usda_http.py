@@ -44,7 +44,7 @@ def make_usda_food(fdcid):
         # https://api.nal.usda.gov/fdc/v1/food/748967?format=full&api_key=USDA_APIKEY
         response = requests.get(
             f'{FOOD_ENDPOINT}/{fdcid}?format=full&api_key={USDA_APIKEY}').json()
-        USDA_CACHE.cache_item(fdcid)
+        USDA_CACHE.cache_item(fdcid, response)
 
     response = USDA_CACHE.get_item(fdcid)
 
@@ -74,6 +74,7 @@ def make_usda_food(fdcid):
                 nutrient = nutrient,
                 usda_food = usda_food 
             ).save()
+    print(response.keys())
 
     for portion in response.get('foodPortions'):
         UsdaFoodPortion(
