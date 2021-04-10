@@ -15,10 +15,14 @@ class CompleteFoodView(View):
     
         pair = UsdaWikiPairing.objects.get(pk=pk)
         return render(request, self.template_name, {
-            'food': pair.wiki_food,
-            'usda': pair.usda_food,
+            'pair': pair,
             'foodNutrients': UsdaFoodNutrient.objects.filter(usda_food=pair.usda_food),
         })
+
+    def post(self, request, pk=None):
+        print('id ---- ', request.POST.get('pair_id'))
+        create(request.POST.get('pair_id'))
+        return redirect(reverse_lazy('review:indexed'))
 
 
 class CompletedListView(View):

@@ -23,14 +23,7 @@ class ScrapeFood(View):
             print('not valid')
             return render(request, self.template_name, {'form': form})
 
-        scrape = food_page.create_food_url(request.POST.get('url'))
-        food = WikiFood(
-            name=scrape.name,
-            description=scrape.description,
-            wiki_url=scrape.wiki_url,
-            img_src=scrape.image_src
-        )
-        food.save()
+        food = food_page.create_food_url(request.POST.get('url'))
 
         return redirect(reverse_lazy('review:food_usda', kwargs={'pk': food.id}))
 
