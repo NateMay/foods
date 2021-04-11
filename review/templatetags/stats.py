@@ -10,4 +10,5 @@ def get_stats():
         'cat_meta_count': WikiCategory.objects.count(),
         'reviewed_foods': WikiFood.objects.filter(reviewed=True).count(),
         'complete': UsdaWikiPairing.objects.count(),
+        'indexed': UsdaWikiPairing.objects.filter(indexed=True).count(),
     }

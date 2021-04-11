@@ -51,9 +51,9 @@ class QuickScrapeCategoryForm(ScrapeFoodForm):
 
 
 PAGE_TYPE_CHOICES = (
-    ("table_categories", "Single Table of Categories"),
-    ("ul_categories", "Single Table"),
-    ("single_table_category", "Tables"),
+    ("table_categories", "Several Tables of Categories"),
+    ("ul_categories", "Unordered List"),
+    ("single_table_category", "Single Table"),
 )
 
 

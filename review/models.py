@@ -128,7 +128,7 @@ class UsdaFoodPortion(models.Model):
 class Scrapable(models.Model):
     name = models.CharField(max_length=50)
     url = models.CharField(max_length=1000, unique=True)
-    column = models.PositiveSmallIntegerField(null=True)
+    column = models.PositiveSmallIntegerField(null=True, default=0)
     isCategory = models.BooleanField(default=True)
     type = models.CharField(max_length=20)
 

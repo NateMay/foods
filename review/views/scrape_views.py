@@ -6,7 +6,7 @@ from review.forms import CatScrapableForm, ScrapeFoodForm, QuickScrapeCategoryFo
 from review.models import Scrapable, WikiCategoryAssignment, WikiFood, WikiCategory
 import json
 from scrape import single_table_category, table_categories, ul_categories, food_page, helpers
-
+import os
 
 class ScrapeFood(View):
     template_name = 'review/new_food_scrape.html'
@@ -80,20 +80,32 @@ class Batch(View):
 
     def post(self, request, pk=None):
         filename = '/Users/nathanielmay/Code/python/review/scrape/scrappable.json'
+        
         scrappables = open(filename, 'r')
-        dumped_json_cache = json.dumps(scrappables)
-        scrape_type = request.POST.get('type')
+        cache_contents = scrappables.read()
+        dumped_json_cache = json.loads(cache_contents)
+        scrappables.close()
 
-        if scrape_type == 'table_categories':
-            dumped_json_cache['table_categories'].append()
-        elif scrape_type == 'ul_categories':
-            dumped_json_cache['ul_categories'].append()
-        elif scrape_type == 'single_table_category':
-            dumped_json_cache['single_table_category'].append()
+        new_scrappable = Scrapable(
+            name = request.POST.get('name'),
+            url = request.POST.get('url'),
+            column = request.POST.get('column'),
+            type  = request.POST.get('type'),
+        )
+        new_scrappable.save()
 
-        fw = open(filename, "w")
-        fw.write(dumped_json_cache)
-        fw.close()
+        dumped_json_cache['category_pages'].append([
+            new_scrappable.name, 
+            new_scrappable.url, 
+            new_scrappable.type, 
+            new_scrappable.column
+        ])
+
+        scrappables = open(filename, "w")
+        scrappables.write(json.dumps(dumped_json_cache))
+        scrappables.close()
+
+        return redirect(reverse_lazy('review:batch'))
 
 
 class ScrapeCategory(View):
