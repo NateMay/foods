@@ -23,7 +23,7 @@
   </div>
 </div>
 <br>
-<form method="GET" id="search_form" action="{% url 'review:categories' %}?filter='{{ term }}'">
+<form method="GET" id="search_form" action="{% url 'review:wiki_categories' %}?filter='{{ term }}'">
   {% csrf_token %}
   <div class="input-group">
     <input id="filter" name="filter" placeholder="Filter text" class="form-control" type="text" value="{{ term }}">
@@ -44,7 +44,7 @@
 <ul class="list-group">
   {% for category in wikicategory_list %}
     <li class="list-group-item">
-      <a href="{% url 'review:category_metadata' category.id %}">{{category.name}}</a>
+      <a href="{% url 'review:wiki_category' category.id %}">{{category.name}}</a>
     </li>
   {% endfor %}
 </ul>

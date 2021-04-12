@@ -33,7 +33,7 @@
   </div>
 </div>
 <br>
-<form method="GET" id="search_form" action="{% url 'review:foods' %}?filter='{{ term }}'">
+<form method="GET" id="search_form" action="{% url 'review:wiki_foods' %}?filter='{{ term }}'">
   {% csrf_token %}
   <div class="input-group">
     <input id="filter" name="filter" placeholder="Filter Foods" class="form-control" type="text" value="{{term}}">
@@ -54,7 +54,7 @@
 <ul class="list-group">
   {% for food in wikifood_list %}
     <li class="list-group-item">
-      <a href="{% url 'review:food_usda' food.id %}">
+      <a href="{% url 'review:pair_usda' food.id %}">
         <img class="avatar" src="{{food.img_src}}">{{food.name}}
       </a>
     </li>

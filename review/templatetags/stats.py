@@ -9,6 +9,6 @@ def get_stats():
         'food_meta_count': WikiFood.objects.count(),
         'cat_meta_count': WikiCategory.objects.count(),
         'reviewed_foods': WikiFood.objects.filter(reviewed=True).count(),
-        'complete': UsdaWikiPairing.objects.count(),
+        'paired': UsdaWikiPairing.objects.count(),
         'indexed': UsdaWikiPairing.objects.filter(indexed=True).count(),
     }

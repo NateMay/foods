@@ -43,7 +43,7 @@ class UsdaPairingView(View):
 
         food.save()
 
-        return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pair.id}))
+        return redirect(reverse_lazy('review:paired_food', kwargs={'pk': pair.id}))
         # return redirect(reverse_lazy('review:review_landing'))
 
 

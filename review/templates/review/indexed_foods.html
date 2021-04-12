@@ -18,10 +18,10 @@
     -webkit-line-clamp: 4; 
     -webkit-box-orient: vertical;
   }
-  .complete-item {
+  .paired-item {
     color: #333;
   }
-  .complete-item:hover{
+  .paired-item:hover{
     text-decoration: none;
   }
 </style>
@@ -37,7 +37,7 @@
   <h1>Foods Index for Algolia</h1>
 </div>
 
-<form method="GET" id="search_form" action="{% url 'review:completed' %}?filter='{{ term }}'">
+<form method="GET" id="search_form" action="{% url 'review:paired' %}?filter='{{ term }}'">
   {% csrf_token %}
   <div class="input-group">
     <input id="filter" name="filter" placeholder="Filter Foods" class="form-control" type="text" value="{{term}}">
@@ -56,7 +56,7 @@
 <ul class="list-group">
   {% for pair in foods %}
   <span class="list-group-item">
-    <a class="complete-item" href="{% url 'review:complete_food' pair.id %}">
+    <a class="paired-item" href="{% url 'review:paired_food' pair.id %}">
       <img src="{{pair.wiki_food.img_src}}" alt="..." class="img-thumbnail">
       <h3>{{pair.wiki_food.name}}</h3>
 

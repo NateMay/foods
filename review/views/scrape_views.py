@@ -25,7 +25,7 @@ class ScrapeFood(View):
 
         food = food_page.create_food_url(request.POST.get('url'))
 
-        return redirect(reverse_lazy('review:food_usda', kwargs={'pk': food.id}))
+        return redirect(reverse_lazy('review:pair_usda', kwargs={'pk': food.id}))
 
 
 class ScrapeCategories(View):

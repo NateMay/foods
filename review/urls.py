@@ -5,15 +5,15 @@ from .import views
 app_name = 'review'
 urlpatterns = [
     path('', views.ReviewLanding.as_view(), name='review_landing'),
-    path('foods', views.FoodListView.as_view(), name='foods'),
-    path('food_metadata/<int:pk>', views.FoodMetadataUpdate.as_view(), name='food_metadata'),
-    path('pair/<int:pk>', views.UsdaPairingView.as_view(), name='food_usda'),
+    path('wiki_foods', views.FoodListView.as_view(), name='wiki_foods'),
+    path('wiki_food/<int:pk>', views.FoodMetadataUpdate.as_view(), name='food_metadata'),
+    path('pair_usda/<int:pk>', views.UsdaPairingView.as_view(), name='pair_usda'),
 
-    path('categories', views.CategoriesListView.as_view(), name='categories'),
-    path('category_metadata/<int:pk>', views.CategoryMetadataUpdate.as_view(), name='category_metadata'),
+    path('wiki_categories', views.CategoriesListView.as_view(), name='wiki_categories'),
+    path('wiki_category/<int:pk>', views.CategoryMetadataUpdate.as_view(), name='wiki_category'),
 
-    path('complete/<int:pk>', views.CompleteFoodView.as_view(), name='complete_food'),
-    path('completed', views.CompletedListView.as_view(), name='completed'),
+    path('pair/<int:pk>', views.PairedFoodView.as_view(), name='paired_food'),
+    path('paired', views.PairedListView.as_view(), name='paired'),
     path('indexed', views.IndexedListView.as_view(), name='indexed'),
     
     path('food_scrape', views.ScrapeFood.as_view(), name='food_scrape'),

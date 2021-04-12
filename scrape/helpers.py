@@ -1,4 +1,4 @@
-from scrape.wikipedia import wiki_http as http
+from scrape.wikipedia import wiki_http
 import re
 WIKI_BASE = 'https://en.wikipedia.org'
 
@@ -37,7 +37,7 @@ def scape_description(page_url, soup=None):
         return ''
 
     if not soup:
-        soup = http.request(page_url)
+        soup = wiki_http.request(page_url)
 
     as_food = soup.select_one("#As_food")
 

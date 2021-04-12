@@ -71,9 +71,9 @@ class FoodMetadataUpdate(LoginRequiredMixin, View):
 
         # try:
         #     UsdaWikiPairing.objects.get(wiki_food=pk)
-        #     return redirect(reverse_lazy('review:complete_food', kwargs={'pk': pk}))
+        #     return redirect(reverse_lazy('review:paired_food', kwargs={'pk': pk}))
         # except:
-        return redirect(reverse_lazy('review:food_usda', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('review:pair_usda', kwargs={'pk': pk}))
 
 
 class CategoryMetadataUpdate(LoginRequiredMixin, View):
@@ -102,6 +102,6 @@ class CategoryMetadataUpdate(LoginRequiredMixin, View):
 
         # try:
         #     UsdaWikiPairing.objects.get(wiki_category=pk)
-        #     return redirect(reverse_lazy('review:complete_category', kwargs={'pk': pk}))
+        #     return redirect(reverse_lazy('review:paired_category', kwargs={'pk': pk}))
         # except:
-        return redirect(reverse_lazy('review:category_metadata', kwargs={'pk': pk}))
+        return redirect(reverse_lazy('review:wiki_category', kwargs={'pk': pk}))

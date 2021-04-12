@@ -53,18 +53,16 @@ Note: You can also launch the console from the web which will automatically lauc
 
 ## To Do [priority]
 
-- [low] Somehow combine results for the same foods but from different dataTypes
+- [high] Fix the food scrape, fragments, better/other names (maybe descritptions), get scientific names. Add categories, dont over writes
 
-- [medium] Fix the food scrape, fragments, better names, get scientific names
+- [high] Do not write over the Wiki food. Create a separate object for the pairing with all new fields.
 
-- [medium] Other names
-
-- [high] Do not write over the Wiki food, create a separate object for the pairing with all new fields
-
-- [medium] Store more images from both wikipedia and unsplash
+- [medium] Store more images from both wikipedia and unsplash with as much metadata as possible
 
 - [low] Find other photo APIs
 
 - [low] auto crop images?
 
 - [low] Identify best images (after more features can be aggrgated)
+
+- [low] Somehow combine results for the same foods but from different dataTypes

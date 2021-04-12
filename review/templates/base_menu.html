@@ -14,11 +14,11 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-            <li><a href="/foods">Foods</a></li>
-            <li><a href="/categories">Categories</a></li>
+            <li><a href="{% url 'review:wiki_foods' %}">Foods</a></li>
+            <li><a href="{% url 'review:wiki_categories' %}">Categories</a></li>
             <li style="color:#fff; margin-top: 14px;">|</li>
-            <li><a href="/completed">Completed</a></li>
-            <li><a href="/indexed">Indexed</a></li>
+            <li><a href="{% url 'review:paired' %}">Paired</a></li>
+            <li><a href="{% url 'review:indexed' %}">Indexed</a></li>
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
                     <img style="width: 25px;" src="{{ user|gravatar:60 }}"/><b class="caret"></b>
