@@ -8,7 +8,7 @@ import json
 from scrape import single_table_category, table_categories, ul_categories, food_page, helpers
 import os
 
-class ScrapeFood(View):
+class ScrapeFood(LoginRequiredMixin, View):
     template_name = 'review/new_food_scrape.html'
 
     def get(self, request):
@@ -28,7 +28,7 @@ class ScrapeFood(View):
         return redirect(reverse_lazy('review:pair_usda', kwargs={'pk': food.id}))
 
 
-class ScrapeCategories(View):
+class ScrapeCategories(LoginRequiredMixin, View):
     template_name = 'review/new_category_scrape.html'
 
     def get(self, request):
@@ -64,12 +64,12 @@ class ScrapeCategories(View):
         return redirect(reverse_lazy('review:category_scrape'))
 
 
-class ScrapeCategory(View):
+class ScrapeCategory(LoginRequiredMixin, View):
     def post(self, request, pk=None):
         scrape(pk)
         return redirect(reverse_lazy('review:batch'))
 
-class Batch(View):
+class Batch(LoginRequiredMixin, View):
 
     def get(self, request):
 

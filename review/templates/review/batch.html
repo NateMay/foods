@@ -12,8 +12,11 @@
 
 {% block content %}
 
+{% load stats %}
+{% get_stats %}
+
 <div class="page-header">
-  <h1>Category Pages <small>What do you want to review?</small></h1>
+  <h1>List Pages <small>What do you want to review?</small></h1>
 </div>
 
 <button class="btn btn-primary pull-right">Scrape all</button>
@@ -48,7 +51,7 @@
   </tbody>
 </table>
 
-<h2>Add Another Category Page</h2>
+<h2>Add Another List Page</h2>
 {% load crispy_forms_tags %}
 <form method="POST" action="">
   {% csrf_token %}

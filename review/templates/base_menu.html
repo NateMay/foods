@@ -14,20 +14,26 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-            <li><a href="{% url 'review:wiki_foods' %}">Foods</a></li>
-            <li><a href="{% url 'review:wiki_categories' %}">Categories</a></li>
-            <li style="color:#fff; margin-top: 14px;">|</li>
-            <li><a href="{% url 'review:paired' %}">Paired</a></li>
-            <li><a href="{% url 'review:indexed' %}">Indexed</a></li>
+
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
                     <img style="width: 25px;" src="{{ user|gravatar:60 }}"/><b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'logout' %}?next={% url 'review:review_landing' %}">Logout</a></li>
-                    <li><a href="{% url 'review:batch' %}">Batch Scrape</a></li>
+                    <li><a href="{% url 'review:batch' %}">Scrape List</a></li>
                     <li><a href="{% url 'review:food_scrape' %}">Scrape a Food</a></li>
                     <li><a href="{% url 'review:category_scrape' %}">Scrape a Category</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'review:wiki_foods' %}">Food Metadata</a></li>
+                    <li><a href="{% url 'review:wiki_categories' %}">Category Metadata</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'review:paired' %}">Paired</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'review:indexed' %}">Indexed</a></li>
+                    <li><a href="https://nate-may.com/food-review" target="_blank">Live Demo</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'review:todos' %}">To Do List</a></li>
+                    <li><a href="{% url 'logout' %}?next={% url 'review:review_landing' %}">Logout</a></li>
                 </ul>
             </li>
             {% else %}

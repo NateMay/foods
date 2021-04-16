@@ -5,8 +5,9 @@ from django.views import View
 from review.models import UsdaFoodNutrient, UsdaWikiPairing, WikiFood
 from pydash import py_
 from algolia.upload import create
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class PairedFoodView(View):
+class PairedFoodView(LoginRequiredMixin, View):
     model = WikiFood
     template_name = 'review/paired_food.html'
 
@@ -25,7 +26,7 @@ class PairedFoodView(View):
         return redirect(reverse_lazy('review:indexed'))
 
 
-class PairedListView(View):
+class PairedListView(LoginRequiredMixin, View):
     template_name = 'review/paired_foods.html'
 
     def get(self, request, ):
@@ -57,7 +58,7 @@ class PairedListView(View):
         create(request.POST.get('pair_id'))
         return redirect(reverse_lazy('review:paired'))
 
-class IndexedListView(View):
+class IndexedListView(LoginRequiredMixin, View):
     template_name = 'review/indexed_foods.html'
     def get(self, request):
         term = self.request.GET.get('filter') or ''

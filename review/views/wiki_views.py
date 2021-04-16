@@ -10,7 +10,7 @@ from review.models import WikiFood, WikiCategory
 from review.unsplash.unsplash_api import get_images
 
 
-class FoodListView(ListView):
+class FoodListView(LoginRequiredMixin, ListView):
     template_name = 'review/scraped_food_list.html'
     model = WikiFood
 
@@ -28,7 +28,7 @@ class FoodListView(ListView):
         return context
 
 
-class CategoriesListView(ListView):
+class CategoriesListView(LoginRequiredMixin, ListView):
     template_name = 'review/scraped_category_list.html'
     model = WikiCategory
 

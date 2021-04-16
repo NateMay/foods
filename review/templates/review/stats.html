@@ -1,11 +1,25 @@
-<div class="stats">
-  <span >Total foods: {{food_meta_count}} </span>
-  <span class="pipe">| </span>
-  <span >Total Categories: {{cat_meta_count}} </span>
-  <span class="pipe">| </span>
-  <span >Reviewed Foods: {{reviewed_foods}} </span>
-  <span class="pipe">| </span>
-  <span >Paired Foods: {{paired}}</span>
-  <span class="pipe">| </span>
-  <span >Indexed Foods: {{indexed}}</span>
-</div>
+<table class="stats-table">
+  <tr>
+    <td><a href="{% url 'review:batch' %}">Scrape a Food List Page</a></td>
+    <td><i class="fa fa-chevron-right" aria-hidden="true"></i></td>
+    <td rowspan="2"><a href="{% url 'review:wiki_foods' %}">Food Metadata <sup>{{food_meta_count}}</sup></a></td>
+    <td rowspan="2"><i class="fa fa-chevron-right" aria-hidden="true"></i></td>
+    <td rowspan="2"><a href="{% url 'review:paired' %}">Paired Foods <sup>{{paired}}</sup></a></td>
+    <td rowspan="2"><i class="fa fa-chevron-right" aria-hidden="true"></i></td>
+    <td rowspan="2"><a href="{% url 'review:indexed' %}">Indexed Foods <sup>{{indexed}}</sup></a></td>
+    
+  </tr>
+  <tr>
+
+    <td><a href="{% url 'review:food_scrape' %}">Scrape a Food Page</a></td>
+    <td><i class="fa fa-chevron-right" aria-hidden="true"></i></td>
+    
+  </tr>
+  <!-- <tr>
+    <td><a href="{% url 'review:category_scrape' %}">Scrape Category</a></td>
+    <td><i class="fa fa-chevron-right" aria-hidden="true"></i></td>
+    <td><a href="{% url 'review:wiki_categories' %}">Category Metadata <sup>{{cat_meta_count}}</sup></a></td>
+    <td><i class="fa fa-chevron-right" aria-hidden="true"></i></td>
+  </tr> -->
+</table>
+<br><br>

@@ -4,12 +4,12 @@ from django.views import View
 from pydash import py_
 from review.forms import UsdaPairForm
 from review.models import UsdaWikiPairing, WikiFood
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from review.usda.usda_http import search, make_usda_food
 
 
 
-class UsdaPairingView(View):
+class UsdaPairingView(LoginRequiredMixin, View):
 
     template_name = 'review/usda_pairing_form.html'
     model = WikiFood

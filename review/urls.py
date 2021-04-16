@@ -20,4 +20,5 @@ urlpatterns = [
     path('category_scrape', views.ScrapeCategories.as_view(), name='category_scrape'),
     path('category_scrape/<int:pk>', views.ScrapeCategory.as_view(), name='test'),
     path('batch', views.Batch.as_view(), name='batch'),
+    path('todos', views.TodoPage.as_view(), name='todos'),
 ]

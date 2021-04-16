@@ -27,15 +27,15 @@
 
 {% block content %}
 
-
+<!-- 
+<div class="page-header">
+  <h1>Nutrition Data Aggregator <small>What do you want to review?</small></h1>
+</div> -->
 {% load stats %}
 {% get_stats %}
 
-  <div class="page-header">
-    <h1>Nutrition Data Aggregator <small>What do you want to review?</small></h1>
-  </div>
 
-
+<!-- 
     <div class="row">
 
       <div class="col-sm-6 col-md-4">
@@ -77,17 +77,17 @@
         </div>
       </div>
 
-    </div>
+    </div> -->
 
     
-    <h2>The Endgame <small>Currated data for a JavaScript-based Web Apllication</small></h2>
+    <h1>The Endgame <small>Currated data for a JavaScript-based Web Apllication</small></h1>
     <br>
 
     <div class="row">
       <!-- <a href="https://www.figma.com/file/Wiq12dV4ZQaoniPQDlHoSz/Prototype?node-id=1433%3A49411" class="btn btn-default" role="button" target="_blank">Design Specs</a>
       <a href="https://nate-may.com/cutcal" class="btn btn-default" role="button" target="_blank">Prototype</a> -->
       
-      <div class="col-sm-6 col-md-4">
+      <div class="col-sm-6 ">
         <div class="thumbnail">
           <img src="{% static 'images/cutcal.png' %}" alt="A variety of foods">
           <div class="caption">
@@ -103,7 +103,7 @@
         </div>
       </div>
 
-      <div class="col-sm-6 col-md-4">
+      <div class="col-sm-6 ">
         <div class="thumbnail">
           <img src="{% static 'images/dietstats.png' %}" alt="A variety of foods">
           <div class="caption">

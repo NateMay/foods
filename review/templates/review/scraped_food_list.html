@@ -12,6 +12,13 @@
     margin-right: 8px;
     border-radius: 4px;
   }
+  .list-group {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .list-group-item {
+    width: calc(100% / 3);
+  }
 </style>
 {% endblock %}
 
@@ -55,7 +62,7 @@
   {% for food in wikifood_list %}
     <li class="list-group-item">
       <a href="{% url 'review:pair_usda' food.id %}">
-        <img class="avatar" src="{{food.img_src}}">{{food.name}}
+        <img class="avatar" loading=lazy src="{{food.img_src}}">{{food.name}}
       </a>
     </li>
   {% endfor %}
