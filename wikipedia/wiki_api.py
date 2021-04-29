@@ -3,7 +3,7 @@ from caches.cache import Cache
 import requests
 import json
 
-WIKI_CACHE = Cache('scrape/wikipedia/wiki_cache.json')
+WIKI_CACHE = Cache('wikipedia/wiki_cache.json')
 
 
 def request(url):

@@ -5,7 +5,7 @@ import json
 from review.models import UsdaNutrient, UsdaFood, UsdaFoodNutrient, UsdaFoodPortion
 from mysecrets import USDA_APIKEY
 
-USDA_CACHE = Cache('review/usda/usda_cache.json')
+USDA_CACHE = Cache('usda/usda_cache.json')
 
 ################
 #### Search ####

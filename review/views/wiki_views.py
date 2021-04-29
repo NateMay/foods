@@ -7,7 +7,7 @@ from django.views.generic import ListView
 from pydash import py_
 from review.forms import FoodForm, CategoryForm
 from review.models import WikiFood, WikiCategory
-from review.unsplash.unsplash_api import get_images
+from unsplash.unsplash_api import get_images
 
 
 class FoodListView(LoginRequiredMixin, ListView):

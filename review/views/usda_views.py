@@ -5,7 +5,7 @@ from pydash import py_
 from review.forms import UsdaPairForm
 from review.models import UsdaWikiPairing, WikiFood
 from django.contrib.auth.mixins import LoginRequiredMixin
-from review.usda.usda_http import search, make_usda_food
+from usda.usda_api import search, make_usda_food
 
 
 

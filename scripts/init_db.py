@@ -3,7 +3,7 @@ from review.models import Scrapable, WikiCategory, WikiCategoryAssignment
 import json
 from django.contrib.auth.models import User;
 from django.core.management import call_command
-from scrape import food_page, helpers
+from wikipedia import food_page, helpers
 import subprocess
 from pathlib import Path
 import time
@@ -25,7 +25,7 @@ def run():
   # except: 
   #   print('user already exists')
 
-  scrappable_file = open(f'{BASE_DIR}/scrape/scrappable.json', 'r')
+  scrappable_file = open(f'{BASE_DIR}/wikipedia/scrappable.json', 'r')
   scrappables = json.loads(scrappable_file.read())
   scrappable_file.close()
 

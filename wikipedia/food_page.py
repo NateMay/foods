@@ -1,5 +1,5 @@
-from scrape.wikipedia import wiki_http
-from scrape import helpers
+from wikipedia import wiki_api
+from wikipedia import helpers
 from review.models import WikiFood
 
 # Logic for scraping a food page
@@ -16,7 +16,7 @@ def food_from_route(route):
 
 def create_food_url(page_url):
     # contructs a WikiFood object by scraping a food page
-    soup = wiki_http.request(page_url)
+    soup = wiki_api.request(page_url)
 
     food, created = WikiFood.objects.get_or_create(
         name = helpers.scrub_string(soup.find('h1').text).replace(' as food', ''),

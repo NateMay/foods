@@ -1,4 +1,4 @@
-from scrape.wikipedia import wiki_http
+from wikipedia import wiki_api
 import re
 WIKI_BASE = 'https://en.wikipedia.org'
 
@@ -10,8 +10,8 @@ def scrub_string(value):
     return remove_citations.strip()
 
 
-def remove_superscripts(table):
-    for superscript in table.select('sup'):
+def remove_superscripts(soup):
+    for superscript in soup.select('sup'):
         superscript.extract()
 
 
@@ -37,7 +37,7 @@ def scape_description(page_url, soup=None):
         return ''
 
     if not soup:
-        soup = wiki_http.request(page_url)
+        soup = wiki_api.request(page_url)
 
     as_food = soup.select_one("#As_food")
 

@@ -1,12 +1,12 @@
 from review.models import WikiCategoryAssignment, WikiCategory
-from scrape.wikipedia import wiki_http
-from scrape import food_page, helpers
+from wikipedia import wiki_api
+from wikipedia import food_page, helpers
 # logic for pages which have a single, giant table of foods
 
 def scrape_page(page_url, category_name):
     # scrapes pages with (effectively) 1 large table
 
-    soup = wiki_http.request(page_url)
+    soup = wiki_api.request(page_url)
 
     # remove footnote superscripts
     for superscript in soup.select('sup'):

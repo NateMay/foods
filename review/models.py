@@ -35,6 +35,21 @@ class WikiFood(models.Model):
     def __str__(self):
         return self.name
 
+# class WikiFood2(models.Model):
+#     name = models.CharField(
+#         max_length=200,
+#         blank=False,
+#         validators=[MinLengthValidator(2, "Food names must be longer than 1 character")]
+#     )
+#     description = models.CharField(max_length=30000)
+#     wiki_url = models.CharField(max_length=1000, unique=True)
+#     img_src = models.CharField(max_length=1000, null=True)
+#     categories = models.ManyToManyField('WikiCategory', through='WikiCategoryAssignment', blank=True)
+#     reviewed = models.BooleanField(default=False)
+
+#     def __str__(self):
+#         return self.name
+
 class WikiCategoryAssignment(models.Model):
     class Meta:
         unique_together = (('food', 'category'),)

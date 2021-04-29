@@ -36,7 +36,7 @@ class UnsplashImage():
         }
 
 
-UNSPLASH_CACHE = Cache('review/unsplash/unsplash_cache.json')
+UNSPLASH_CACHE = Cache('unsplash/unsplash_cache.json')
 BASE = 'https://api.unsplash.com/search/photos?'
 
 

@@ -5,7 +5,7 @@ from django.views import View
 from review.forms import CatScrapableForm, ScrapeFoodForm, QuickScrapeCategoryForm
 from review.models import Scrapable, WikiCategoryAssignment, WikiFood, WikiCategory
 import json
-from scrape import single_table_category, table_categories, ul_categories, food_page, helpers
+from wikipedia import single_table_category, table_categories, ul_categories, food_page, helpers
 import os
 
 class ScrapeFood(LoginRequiredMixin, View):
@@ -79,7 +79,7 @@ class Batch(LoginRequiredMixin, View):
         })
 
     def post(self, request, pk=None):
-        filename = '/Users/nathanielmay/Code/python/review/scrape/scrappable.json'
+        filename = '/Users/nathanielmay/Code/python/review/wikipedia/scrappable.json'
         
         scrappables = open(filename, 'r')
         cache_contents = scrappables.read()

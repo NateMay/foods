@@ -1,5 +1,5 @@
-from scrape.wikipedia import wiki_http
-from scrape import helpers, food_page
+from wikipedia import wiki_api
+from wikipedia import helpers, food_page
 
 from review.models import WikiCategory, WikiCategoryAssignment
 
@@ -12,7 +12,7 @@ def scrape_page(page_url, parent_category):
         2) p = description
         3) ul = list
     '''
-    soup = wiki_http.request(page_url)
+    soup = wiki_api.request(page_url)
 
     parent, created = WikiCategory.objects.get_or_create(
         name=parent_category,
