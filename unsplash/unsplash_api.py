@@ -9,31 +9,27 @@ from pydash import py_
 
 
 class UnsplashImage():
-    def __init__(self, result) -> None:
-        self.width = result.get('width'),
-        self.height = result.get('height'),
-        self.color = result.get('color')
-        self.blur_hash = result.get('blur_hash')
-        self.description = result.get('description')
-        self.alt_description = result.get('alt_description')
-        print()
-        self.urls = {
-            'raw': result.get('urls').get('raw'),
-            'full': result.get('urls').get('full'),
-            'regular': result.get('urls').get('regular'),
-            'small': result.get('urls').get('small'),
-            'thumb': result.get('urls').get('thumb'),
-        }
-        self.unsplash_page = result.get('links.html')
-        self.categories = result.get('categories')
-        self.user = {
-            'username': result.get('user.username'),
-        }
-        self.ancestry = {
-            'type': result.get('tags.source.ancestry.type.slug'),
-            'category': result.get('tags.source.ancestry.category.slug'),
-            'subcategory': result.get('tags.source.ancestry.subcategory.slug'),
-        }
+    def __init__(self, photo) -> None:
+        self.width = photo.get('width'),
+        self.height = photo.get('height'),
+        self.color = photo.get('color')
+        self.blur_hash = photo.get('blur_hash')
+        self.description = photo.get('description')
+        self.alt_description = photo.get('alt_description')
+
+        self.raw = photo.get('urls').get('raw'),
+        self.full = photo.get('urls').get('full'),
+        self.regular = photo.get('urls').get('regular'),
+        # self.small = resp.get('urls').get('small'),
+        # self.thumb = resp.get('urls').get('thumb'),
+
+        self.unsplash_page = photo.get('links.html')
+        # self.categories = photo.get('categories')
+        self.username = photo.get('user.username')
+
+        #  possible category information here
+        self.ancestryCategory = photo.get('tags.source.ancestry.category.slug')
+        self.ancestrySubcategory = photo.get('tags.source.ancestry.subcategory.slug')
 
 
 UNSPLASH_CACHE = Cache('unsplash/unsplash_cache.json')
@@ -51,6 +47,3 @@ def get_images(term, page=1):
 
     return py_.map(response.get('results'), lambda r: UnsplashImage(r))
 
-    # images = []
-    # for result in response.results:
-    #     images.append(UnsplashImage(result))

@@ -31,24 +31,34 @@ class WikiFood(models.Model):
     img_src = models.CharField(max_length=1000, null=True)
     categories = models.ManyToManyField('WikiCategory', through='WikiCategoryAssignment', blank=True)
     reviewed = models.BooleanField(default=False)
+    
 
     def __str__(self):
         return self.name
 
-# class WikiFood2(models.Model):
-#     name = models.CharField(
-#         max_length=200,
-#         blank=False,
-#         validators=[MinLengthValidator(2, "Food names must be longer than 1 character")]
-#     )
-#     description = models.CharField(max_length=30000)
-#     wiki_url = models.CharField(max_length=1000, unique=True)
-#     img_src = models.CharField(max_length=1000, null=True)
-#     categories = models.ManyToManyField('WikiCategory', through='WikiCategoryAssignment', blank=True)
-#     reviewed = models.BooleanField(default=False)
+class WikiFoodName(models.Model):
 
-#     def __str__(self):
-#         return self.name
+    food = models.ForeignKey(WikiFood, on_delete=models.CASCADE)
+    name = models.CharField(max_length=500)
+    type = models.CharField(max_length=20) # infobox, scientific, bold, pageTitle
+
+class UnsplashPhoto(models.Model):
+    width = models.CharField(max_length=20)
+    height = models.CharField(max_length=20)
+    color = models.CharField(max_length=20)
+    blur_hash = models.CharField(max_length=500)
+    description = models.CharField(max_length=1500)
+    alt_description= models.CharField(max_length=1500)
+    raw = models.CharField(max_length=500)
+    full = models.CharField(max_length=500)
+    regular = models.CharField(max_length=500)
+    unsplash_page = models.CharField(max_length=500)
+    # categories
+    username = models.CharField(max_length=100)
+    ancestryType
+    ancestryCategory
+    ancestrySubcategory
+
 
 class WikiCategoryAssignment(models.Model):
     class Meta:

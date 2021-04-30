@@ -95,11 +95,17 @@ pages = [
     'https://en.wikipedia.org/wiki/Scallop'
 ]
 
-for page in pages:
-    soup = wiki_api.request(page)
-    remove_superscripts(soup)
-    print(getDescription(soup))
+# for page in pages:
+#     soup = wiki_api.request(page)
+#     remove_superscripts(soup)
+#     print(getDescription(soup))
 
 # for names in getNames(soup):
 # print(getNames(soup))
 # getSection(soup, 'Culinary')
+
+# from pexels.pexels_api import get_images
+from pixabay.pixabay_api import get_images
+
+for image in get_images('apple'):
+    print(image)
