@@ -6,9 +6,9 @@ from django.views import View
 from django.views.generic import ListView
 from pydash import py_
 from review.forms import FoodForm, CategoryForm
-from review.models import WikiFood, WikiCategory
-from unsplash.unsplash_api import get_images
-
+from review.models import PexelsPhoto, PixabayPhoto, UnsplashPhoto, WikiFood, WikiCategory, WikiFoodName
+from unsplash.unsplash_api import get_unsplash_photos
+from itertools import chain
 
 class FoodListView(LoginRequiredMixin, ListView):
     template_name = 'review/scraped_food_list.html'
@@ -47,11 +47,36 @@ class FoodMetadataUpdate(LoginRequiredMixin, View):
 
     def get(self, request, pk):
         food = WikiFood.objects.get(pk=pk)
+        
         return render(request, self.template_name, {
-            'form': FoodForm(instance=get_object_or_404(WikiFood, id=pk)),
+            
+            'form': FoodForm(initial={
+                'name': food.name,
+                'description':food.description,
+                'categories':food.categories.all(),
+                'img_src':food.img_src,
+                'wiki_url':food.wiki_url,
+                'names':self.common_names(pk),
+                'scientific_name':self.scientific_name(pk)
+            }),
             'food': food,
-            'images': get_images(re.sub(r'[^A-Za-z0-9 ]+', '', food.name), 1)
+            'images': self.all_images(food),
+            # 'images': get_unsplash_photos(re.sub(r'[^A-Za-z0-9 ]+', '', food.name), 1)
         })
+
+    def common_names(self, pk):
+        return WikiFoodName.objects.filter(food=pk)
+    
+    def scientific_name(self, pk):
+        name = WikiFoodName.objects.filter(food=pk, type='SC')
+        return name[0] if name and name[0] else ''
+
+    def all_images(self, food):
+        return list(chain(
+            UnsplashPhoto.objects.filter(food_id=food.id),
+            PexelsPhoto.objects.filter(food_id=food.id),
+            PixabayPhoto.objects.filter(food_id=food.id)
+        ))
 
     def post(self, request, pk=None):
 

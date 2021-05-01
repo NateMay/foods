@@ -23,7 +23,7 @@ class ScrapeFood(LoginRequiredMixin, View):
             print('not valid')
             return render(request, self.template_name, {'form': form})
 
-        food = food_page.create_food_url(request.POST.get('url'))
+        food = food_page.scrape_wiki_food(request.POST.get('url'))
 
         return redirect(reverse_lazy('review:pair_usda', kwargs={'pk': food.id}))
 

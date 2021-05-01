@@ -1,7 +1,6 @@
 from review.models import UsdaFood, UsdaFoodPortion, UsdaWikiPairing
 from algoliasearch.search_client import SearchClient
 from mysecrets import ALGOLIA_APIKEY, ALGOLIA_APPID
-from scripts.temp import run
 
 client = SearchClient.create(ALGOLIA_APPID, ALGOLIA_APIKEY)
 index = client.init_index('dev_dietstats')

@@ -1,62 +1,69 @@
 
 from mysecrets import PIXABAY_APIKEY
+from review.models import PixabayPhoto
 from caches.cache import Cache
 import requests
 from pydash import py_
 
-# https://pixabay.com/api/docs/
 
-
-class PixabayImage():
-    def __init__(self, photo, order, total) -> None:
-        self.order = order
-        self.total = total
-
-        self.pageURL = photo.get('pageURL')
-        self.pixabay_id = photo.get('id')
-        self.type = photo.get('type')
-        self.tags = photo.get('tags')
-        self.previewURL = photo.get('previewURL')
-        self.previewWidth = photo.get('previewWidth')
-        self.previewHeight = photo.get('previewHeight')
-        self.webformatURL = photo.get('webformatURL')
-        self.webformatWidth = photo.get('webformatWidth')
-        self.webformatHeight = photo.get('webformatHeight')
-        self.largeImageURL = photo.get('largeImageURL')
-        self.fullHDURL = photo.get('fullHDURL')
-        self.imageURL = photo.get('imageURL')
-        self.imageWidth = photo.get('imageWidth')
-        self.imageHeight = photo.get('imageHeight')
-        self.imageSize = photo.get('imageSize')
-        self.views = photo.get('views')
-        self.downloads = photo.get('downloads')
-        self.favorites = photo.get('favorites')
-        self.likes = photo.get('likes')
-        self.comments = photo.get('comments')
-        self.user_id = photo.get('user_id')
-        self.user = photo.get('user')
-        self.userImageURL = photo.get('userImageURL')
-
-    def __str__(self) -> str:
-        return f'({self.order} of {self.total}) {self.imageURL}'
-
-
-# https://pixabay.com/api/?key=<KEY>&q=yellow+flowers&image_type=photo
 PEXELS_CACHE = Cache('pixabay/pixabay_cache.json')
+
+# https://pixabay.com/api/docs/
+# https://pixabay.com/api/?page=1&per_page=30&q=term_string&image_type=photo&key=<API KEY>
 BASE = 'https://pixabay.com/api/'
 
 
-def get_images(term, page=1):
-
+def get_pixabay_photos(food, page=1):
+    term = food.name
     key = f'{term}||{page}'
     response = PEXELS_CACHE.get_item(key)
 
     if not response:
+        query_params = dictToQuery({
+            'q': term,
+            'page': page,
+            'per_page': 30,
+            'image_type': 'photo',
+            'key': PIXABAY_APIKEY
+        })
+        # query_params = f'?page={page}&per_page=30&q={term}&image_type=photo&key={PIXABAY_APIKEY}'
         response = requests.get(
-            f'{BASE}?page={page}&per_page=30&q={term}&image_type=photo&key={PIXABAY_APIKEY}').json()
+            f'{BASE}?{query_params}').json()
         PEXELS_CACHE.cache_item(key, response)
 
-    # engineered features of ML
-    total_results = response.get('total')
+    return py_.map(response.get('hits'), lambda photo, i: PixabayPhoto.objects.get_or_create(
+        food=food,
+        search_term = term,
+        # engineered features for ML
+        order = i,
+        total = response.get('total'),
 
-    return py_.map(response.get('hits'), lambda r, i: PixabayImage(r, i, total_results))
+        pageURL = photo.get('pageURL'),
+        pixabay_id = photo.get('id'),
+        tags = photo.get('tags'),
+        previewWidth = photo.get('previewWidth'),
+        previewHeight = photo.get('previewHeight'),
+        webformatWidth = photo.get('webformatWidth'),
+        webformatHeight = photo.get('webformatHeight'),
+        largeImageURL = photo.get('largeImageURL'),
+        imageURL = photo.get('imageURL'),
+        imageWidth = photo.get('imageWidth'),
+        imageHeight = photo.get('imageHeight'),
+        imageSize = photo.get('imageSize'),
+        views = photo.get('views'),
+        downloads = photo.get('downloads'),
+        favorites = photo.get('favorites'),
+        likes = photo.get('likes'),
+        comments = photo.get('comments'),
+        user_id = photo.get('user_id'),
+        user = photo.get('user'),
+        previewURL = photo.get('previewURL'),
+        # webformatURL = photo.get('webformatURL'),
+        # fullHDURL = photo.get('fullHDURL'),
+    )[0])
+
+def dictToQuery(d):
+  query = ''
+  for key in d.keys():
+    query += str(key) + '=' + str(d[key]) + "&"
+  return query
